@@ -2,9 +2,9 @@ name: Build Android Projeto GTA
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ "free", "master" ]
   pull_request:
-    branches: [ "main", "master" ]
+    branches: [ "free", "master" ]
   workflow_dispatch:
 
 jobs:
