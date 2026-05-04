@@ -29,7 +29,7 @@ jobs:
 
       - name: Instalar NDK 26
         run: |
-          sdkmanager "26.2.11394342" # Versão estável do NDK 26
+          sdkmanager "26.1.10909125" # Versão estável do NDK 26
           echo "ANDROID_NDK_HOME=$ANDROID_SDK_ROOT/ndk/26.1.10909125" >> $GITHUB_ENV
 
       - name: Dar permissão ao Gradle
