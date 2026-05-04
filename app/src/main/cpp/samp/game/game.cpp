@@ -755,7 +755,7 @@ extern UI *pUI;
 void MainLoop();
 void CGame::Process() {
     if(bIsGameExiting)return;
-
+    static int streamingTick = 0; // Adicione esta linha aqui!
     MainLoop();
     if (pNetGame)
     {
