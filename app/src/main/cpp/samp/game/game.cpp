@@ -699,9 +699,11 @@ bool CGame::InitialiseRenderWare() {
     Scene.m_pRwCamera = camera;
     TheCamera.Init();
     TheCamera.SetRwCamera(Scene.m_pRwCamera);
-    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 2000.0f);
+    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 800.0f);
     RwCameraSetNearClipPlane(Scene.m_pRwCamera, 0.9f);
-    CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
+   // CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
+	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
+    CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 1.2f);
 
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
@@ -810,10 +812,10 @@ void CGame::Process() {
     CurrentTimeInCycles = CTimer::GetCurrentTimeInCycles();
     v1 = CurrentTimeInCycles / CTimer::GetCyclesPerMillisecond();
 
-    //CStreaming::Update();
+    CStreaming::Update();
     //fix mas fps
     // No game.cpp
-static int streamingTick = 0;
+/*static int streamingTick = 0;
 auto pStreaming = pGame->GetStreaming();
 
 if (pGame && pStreaming) {
@@ -830,7 +832,7 @@ if (pGame && pStreaming) {
             streamingTick = 0;
         }
     }
-}
+}*/
     
 
     v2 = CTimer::GetCurrentTimeInCycles();
