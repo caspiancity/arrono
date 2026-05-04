@@ -358,34 +358,52 @@ void CStreaming::AddModelsToRequestList(const CVector* point, int32 streamingFla
 
 #include "Textures/TextureDatabaseRuntime.h"
 extern CNetGame *pNetGame;
+//void CStreaming::Update() {
 void CStreaming::Update() {
-
+    // 1. Verificação de Pausa
     if (CTimer::GetIsPaused())
         return;
 
+    // 2. Garantia da Skin Principal (MALE01/CJ) - Mantém para evitar crash
     if(!CStreaming::GetInfo(MODEL_MALE01).IsLoaded()) {
         RequestModel(MODEL_MALE01, STREAMING_KEEP_IN_MEMORY);
         CStreaming::LoadAllRequestedModels(false);
     }
     CModelInfo::GetModelInfo(MODEL_MALE01)->m_nRefCount = 999;
 
-    if(CTimer::m_snTimeInMillisecondsNonClipped % 100 == 0)
+    // 3. Otimização do Garbage Collector (Limpador de Memória)
+    // Alterado de 100ms para 500ms para reduzir picos de uso de CPU
+    if(CTimer::m_snTimeInMillisecondsNonClipped % 500 == 0) {
         RemoveLeastUsedModel(STREAMING_KEEP_IN_MEMORY);
+    }
 
-
+    // 4. Otimização de Texturas
     static double previousTime{};
     const double currentTimeInSeconds = CTimer::m_snTimeInMillisecondsNonClipped / 1000.0;
     const double deltaTime = currentTimeInSeconds - previousTime;
     previousTime = currentTimeInSeconds;
-    const double clampedDeltaTime = std::min(0.1, deltaTime);
-    TextureDatabaseRuntime::UpdateStreaming(clampedDeltaTime, true);
+    
+    // Só processa texturas se o tempo decorrido for significativo (> 10ms)
+    if (deltaTime > 0.01) {
+        TextureDatabaseRuntime::UpdateStreaming(std::min(0.1, deltaTime), true);
+    }
 
+    // 5. Verificação de Segurança do Player (SAMP/NetGame)
+    if(!pNetGame || !pNetGame->GetPlayerPool()->GetLocalPlayer())
+        return;
+
+    auto pLocalPed = pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed;
+    if (!pLocalPed) return;
+
+    const CVector& playerPos = pLocalPed->GetPosition();
     CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0xBBA8D0);
-
     const auto& camPos = TheCamera.GetPosition();
+
+    // 6. Otimização de LODs e Modelos (Filtro de Altura)
     const float fCamDistanceToGroundZ = camPos.z - TheCamera.CalculateGroundHeight(eGroundHeightType::ENTITY_BB_BOTTOM);
+    
     if (!ms_disableStreaming && !CRenderer::m_loadingPriority) {
-        if (fCamDistanceToGroundZ >= 50.0f) {
+        if (fCamDistanceToGroundZ >= 150.0f) { // Aumentado para 150 para evitar carregar LODs inúteis
             if (CGame::CanSeeOutSideFromCurrArea()) {
                 AddLodsToRequestList(&camPos, 0);
             }
@@ -395,50 +413,39 @@ void CStreaming::Update() {
         }
     }
 
-//    if (CTimer::GetFrameCounter() % 128 == 106) {
-//        m_bBoatsNeeded = false;
-//        if (camPos.z < 500.0f) {
-//            m_bBoatsNeeded = ThePaths.IsWaterNodeNearby(camPos, 80.0f);
-//        }
-//    }
-    if(!pNetGame || !pNetGame->GetPlayerPool()->GetLocalPlayer())
-        return;
-
-    auto pLocalPed = pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed;
-    const CVector& playerPos = pLocalPed->GetPosition();
-//    if (!ms_disableStreaming
-//        && !CCutsceneMgr::IsCutsceneProcessing()
-//        && CGame::CanSeeOutSideFromCurrArea()
-//        && CReplay::Mode != MODE_PLAYBACK
-//        && fCamDistanceToGroundZ < 50.0f
-//            ) {
-//        StreamVehiclesAndPeds_Always(playerPos);
-//        if (!IsVeryBusy()) {
-//            StreamVehiclesAndPeds();
-//            StreamZoneModels(playerPos);
-//        }
-//    }
+    // Carrega o que foi solicitado até aqui
     LoadRequestedModels();
 
-    if (pLocalPed->IsInVehicle()) {
-        CVehicleGTA* remoteVehicle = pLocalPed->pVehicle;
-
-        CColStore::AddCollisionNeededAtPosn(&playerPos);
-        CIplStore::AddIplsNeededAtPosn(&playerPos);
-
-        const auto& removeVehiclePos = remoteVehicle->GetPosition();
-        CColStore::LoadCollision(removeVehiclePos, false);
-        CColStore::EnsureCollisionIsInMemory(&removeVehiclePos);
-        CIplStore::LoadIpls(removeVehiclePos, false);
-        CIplStore::EnsureIplsAreInMemory(&removeVehiclePos);
+    // 7. OTIMIZAÇÃO CRÍTICA: Colisões e IPLs com Timer (A cada 500ms)
+    // Isso evita que o jogo escaneie o chão/prédios a cada frame
+    static uint32_t lastSpatialUpdate = 0;
+    if (CTimer::m_snTimeInMillisecondsNonClipped - lastSpatialUpdate > 500) {
+        
+        if (pLocalPed->IsInVehicle()) {
+            CVehicleGTA* remoteVehicle = pLocalPed->pVehicle;
+            if (remoteVehicle) {
+                const auto& vehiclePos = remoteVehicle->GetPosition();
+                
+                CColStore::AddCollisionNeededAtPosn(&vehiclePos);
+                CIplStore::AddIplsNeededAtPosn(&vehiclePos);
+                
+                CColStore::LoadCollision(vehiclePos, false);
+                CColStore::EnsureCollisionIsInMemory(&vehiclePos);
+                CIplStore::LoadIpls(vehiclePos, false);
+                CIplStore::EnsureIplsAreInMemory(&vehiclePos);
+            }
+        }
+        else {
+            CColStore::LoadCollision(playerPos, false);
+            CColStore::EnsureCollisionIsInMemory(&playerPos);
+            CIplStore::LoadIpls(playerPos, false);
+            CIplStore::EnsureIplsAreInMemory(&playerPos);
+        }
+        
+        lastSpatialUpdate = CTimer::m_snTimeInMillisecondsNonClipped;
     }
-    else {
-        CColStore::LoadCollision(playerPos, false);
-        CColStore::EnsureCollisionIsInMemory(&playerPos);
-        CIplStore::LoadIpls(playerPos, false);
-        CIplStore::EnsureIplsAreInMemory(&playerPos);
-    }
 
+    // 8. Purge da Lista de Requisições
     if (ms_bEnableRequestListPurge) {
         PurgeRequestList();
     }
