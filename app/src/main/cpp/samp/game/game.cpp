@@ -755,7 +755,7 @@ extern UI *pUI;
 void MainLoop();
 void CGame::Process() {
     if(bIsGameExiting)return;
-    static int streamingTick = 0; // Adicione esta linha aqui!
+   // static int streamingTick = 0; // Adicione esta linha aqui!
     MainLoop();
     if (pNetGame)
     {
@@ -812,11 +812,25 @@ void CGame::Process() {
 
     //CStreaming::Update();
     //fix mas fps
-    streamingTick++;
-    if (streamingTick >= 5) { // Só atualiza o streaming a cada 2 frames
-        CStreaming::Update();
+    // No game.cpp
+static int streamingTick = 0;
+auto pStreaming = pGame->GetStreaming();
+
+if (pGame && pStreaming) {
+    // Se o jogo estiver carregando muita coisa (fila cheia), 
+    // atualizamos todo frame para evitar o crash.
+    // Se a fila estiver baixa, voltamos a pular frames para ganhar FPS.
+    if (pStreaming->m_nNumModelsRequested > 10) { 
+        pStreaming->Update();
         streamingTick = 0;
+    } else {
+        streamingTick++;
+        if (streamingTick >= 5) { 
+            pStreaming->Update();
+            streamingTick = 0;
+        }
     }
+}
     
 
     v2 = CTimer::GetCurrentTimeInCycles();
