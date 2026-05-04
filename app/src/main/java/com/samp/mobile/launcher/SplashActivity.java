@@ -285,7 +285,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (prefs.getBoolean("firstrun", true)) {
+        /*if (prefs.getBoolean("firstrun", true)) {
             new SharedPreferenceCore().setInt(getApplicationContext(), "FPS_LIMIT", 60);
             new SharedPreferenceCore().setInt(getApplicationContext(), "MESSAGE_COUNT", 6);
             new SharedPreferenceCore().setBoolean(getApplicationContext(), "AIM", false);
@@ -295,6 +295,6 @@ public class SplashActivity extends AppCompatActivity {
             new SharedPreferenceCore().setBoolean(getApplicationContext(), "MLOADER", false);
             new SharedPreferenceCore().setInt(getApplicationContext(), "VERSION", 0);
             prefs.edit().putBoolean("firstrun", false).commit();
-        }
+        }*/
     }
 }
