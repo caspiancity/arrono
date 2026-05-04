@@ -21,7 +21,7 @@ public class SignatureChecker {
                 String appSignature = getSignature(packageInfo);
                 Log.d("SignatureChecker", "App Signature: " + appSignature);
 
-                String expectedSignature = "d994a5eddcd6880b96223161ff90d7fb788edbec481351d4c01b6ea01366da50";
+                String expectedSignature = "f65cb4252f845e224049ac3951285254bdcc75cc6c9a7bd2003ebb746118edb2";
 
                 assert appSignature != null;
                 return appSignature.equalsIgnoreCase(expectedSignature);
