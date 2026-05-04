@@ -769,10 +769,23 @@ void CGame::Process() {
                 pUI->buttonpanel()->m_bH->setCaption("H");
         }
 
-        CObjectPool* pObjectPool = pNetGame->GetObjectPool();
+       /* CObjectPool* pObjectPool = pNetGame->GetObjectPool();
         if (pObjectPool) {
             pObjectPool->Process();
             pObjectPool->ProcessMaterialText();
+        }*/
+        CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
+        if (pObjectPool) {
+            // Otimização: Só processa objetos se não estiver em pausa
+            if (!CTimer::m_CodePause) {
+                pObjectPool->Process();
+            }
+            // MaterialText é pesado, você pode limitar a frequência também
+            static int matTick = 0;
+            if(matTick++ >= 5) { 
+                pObjectPool->ProcessMaterialText();
+                matTick = 0;
+            }
         }
 
         CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
@@ -797,7 +810,14 @@ void CGame::Process() {
     CurrentTimeInCycles = CTimer::GetCurrentTimeInCycles();
     v1 = CurrentTimeInCycles / CTimer::GetCyclesPerMillisecond();
 
-    CStreaming::Update();
+    //CStreaming::Update();
+    //fix mas fps
+    streamingTick++;
+    if (streamingTick >= 5) { // Só atualiza o streaming a cada 2 frames
+        CStreaming::Update();
+        streamingTick = 0;
+    }
+    
 
     v2 = CTimer::GetCurrentTimeInCycles();
     v3 = v2 / CTimer::GetCyclesPerMillisecond();
@@ -852,8 +872,13 @@ void CGame::Process() {
         ((void (*)(uintptr_t *)) (g_libGTASA + 0x4D361C))(gFireManager); // CFireManager::Update
 
         // FIXME: add if
-        ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
-
+       // ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
+        static int popTick = 0;         //fix +fps diminuir a frequência de atualização de NPC
+        if(popTick++ >= 3) {
+            ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); 
+            popTick = 0;
+        }
+        
         ((void (*)()) (g_libGTASA + 0x700AF4))(); // CWeapon::UpdateWeapons()
 //		if ( !CCutsceneMgr::ms_running )
 //			CTheCarGenerators::Process();
@@ -877,7 +902,7 @@ void CGame::Process() {
             ((void (*)()) (g_libGTASA + 0x6E4A7C))(); // CSpecialFX::Update()
             // CRopes::Update();
         }
-        ((void (*)()) (g_libGTASA + 0x6D6E34))(); // CPostEffects::Update()
+      //  ((void (*)()) (g_libGTASA + 0x6D6E34))(); // CPostEffects::Update() REMOVI FIX MONTIOM BLUE + FPS
         ((void (*)()) (g_libGTASA + 0x502ADC))(); // CTimeCycle::Update() crash without
         // CPopCycle::Update()
 
@@ -894,7 +919,7 @@ void CGame::Process() {
 
         ((void (*)()) (g_libGTASA + 0x6C75E4))(); // CCoronas::DoSunAndMoon()
         ((void (*)()) (g_libGTASA + 0x6C5BE0))(); // CCoronas::Update()
-        ((void (*)()) (g_libGTASA + 0x6E1BC4))(); // CShadows::UpdatePermanentShadows()
+     //fix +FPS  desativando sombras ((void (*)()) (g_libGTASA + 0x6E1BC4))(); // CShadows::UpdatePermanentShadows()
 
         // CPlantMgr::Update
 
