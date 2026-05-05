@@ -98,14 +98,15 @@ void CObject::Process(float fElapsedTime)
     if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
     {
         CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
-        if (pLocal && pLocal->GetPlayerPed()) 
+        if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
         {
-            CVector pos = pLocal->GetPlayerPed()->GetPos();
+            // Na sua base o caminho é: pPlayerPed->m_pPed->GetMatrix().pos
+            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetMatrix().pos;
             
-            // Aplicando o formato correto x, y, z
+            // Passando os 3 floats (x, y, z) como sua função exige
             float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
             
-            if (fDist > 120.0f) return; 
+            if (fDist > 60.0f) return; 
         }
     }
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
@@ -431,19 +432,19 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 void CObject::ProcessMaterialText()
 {
     // [Otimização Corrigida]
-    if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
+if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
     {
         CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
-        if (pLocal && pLocal->GetPlayerPed()) 
+        if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
         {
-            CVector pos = pLocal->GetPlayerPed()->GetPos();
+            // Acessando a posição através do m_pPed que vimos no seu CPlayerPed::ProcessAttach
+            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetMatrix().pos;
             
-            // Usando o formato que você mandou: x, y, z separados
             float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
             
             if (fDist > 60.0f) return; 
         }
-	}
+    }
 
     for (int i = 0; i < 16; i++)
     {
