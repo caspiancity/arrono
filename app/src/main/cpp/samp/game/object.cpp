@@ -95,7 +95,7 @@ CObject::~CObject()
 void CObject::Process(float fElapsedTime)
 {
 	// [Otimização] Se o objeto estiver muito longe, não processe física/movimento +fps
-    if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
+   /* if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
     {
         CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
         if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
@@ -105,7 +105,7 @@ void CObject::Process(float fElapsedTime)
             
            // if (fDist > 180.0f) return; 
         }
-    }
+    }*/
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
 	{
 		if (pNetGame)
