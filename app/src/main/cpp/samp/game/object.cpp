@@ -94,6 +94,12 @@ CObject::~CObject()
 
 void CObject::Process(float fElapsedTime)
 {
+	// [Otimização] Se o objeto estiver muito longe, não processe física/movimento +fps
+    if (m_pEntity) {
+        float fDist = m_pEntity->GetDistanceFromPoint(pGame->GetActiveCamera()->GetPos());
+        if (fDist > 60.0f) return; 
+	}
+
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
 	{
 		if (pNetGame)
@@ -398,7 +404,7 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 	m_iMaterialTextAlign[index] = textAlignment;
 }
 
-void CObject::ProcessMaterialText()
+/*void CObject::ProcessMaterialText()
 {
 	for (int i = 0; i < 16; i++)
 	{
@@ -412,6 +418,30 @@ void CObject::ProcessMaterialText()
 			m_bHasMaterialText = true;
 		}
 	}
+}*/
+// +fps
+void CObject::ProcessMaterialText()
+{
+    // [Otimização] Só processa se o objeto estiver a menos de 60 metros
+    if (m_pEntity) {
+        float fDist = m_pEntity->GetDistanceFromPoint(pGame->GetActiveCamera()->GetPos());
+        if (fDist > 60.0f) return; 
+    }
+
+    for (int i = 0; i < 16; i++)
+    {
+        if (m_iMaterialType[i] == MATERIAL_TYPE_TEXT && m_MaterialTextTexture[i] == 0)
+        {
+            // [Otimização] Reduzimos a fonte em 50% para mobile (mais leve para a GPU)
+            m_iMaterialFontSize[i] *= 0.50f; 
+            
+            m_MaterialTextTexture[i] = reinterpret_cast<uintptr_t>(pMaterialTextGenerator->Generate(
+                    m_szMaterialText[i], m_iMaterialSize[i], m_iMaterialFontSize[i],
+                    false, m_dwMaterialFontColor[i], m_dwMaterialBackColor[i],
+                    m_iMaterialTextAlign[i]));
+            m_bHasMaterialText = true;
+        }
+    }
 }
 
 // 0.3.7
