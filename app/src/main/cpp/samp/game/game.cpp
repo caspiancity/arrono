@@ -811,7 +811,8 @@ void CGame::Process() {
     CurrentTimeInCycles = CTimer::GetCurrentTimeInCycles();
     v1 = CurrentTimeInCycles / CTimer::GetCyclesPerMillisecond();
 
-    CStreaming::Update();
+    //CStreaming::Update();
+	pStreaming->Update();
     //fix mas fps
     // No game.cpp
 /*static int streamingTick = 0;
@@ -870,7 +871,7 @@ if (pGame && pStreaming) {
         ((void (*)()) (g_libGTASA + 0x6F0BD8))(); // CWeather::Update()
         ((void(*)())(g_libGTASA + 0x3F3AD8))(); // CTheScripts::Process()
         // CCollision::Update()
-        CCollision::Update();
+        //CCollision::Update();
 
         // CPathFind::UpdateStreaming
 
@@ -913,7 +914,7 @@ if (pGame && pStreaming) {
             ((void (*)()) (g_libGTASA + 0x6E4A7C))(); // CSpecialFX::Update()
             // CRopes::Update();
         }
-      //  ((void (*)()) (g_libGTASA + 0x6D6E34))(); // CPostEffects::Update() REMOVI FIX MONTIOM BLUE + FPS
+       ((void (*)()) (g_libGTASA + 0x6D6E34))(); // CPostEffects::Update() REMOVI FIX MONTIOM BLUE + FPS
         ((void (*)()) (g_libGTASA + 0x502ADC))(); // CTimeCycle::Update() crash without
         // CPopCycle::Update()
 
