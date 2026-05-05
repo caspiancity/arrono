@@ -870,7 +870,7 @@ if (pGame && pStreaming) {
         ((void (*)()) (g_libGTASA + 0x6F0BD8))(); // CWeather::Update()
         ((void(*)())(g_libGTASA + 0x3F3AD8))(); // CTheScripts::Process()
         // CCollision::Update()
-        //CCollision::Update();
+        CCollision::Update();
 
         // CPathFind::UpdateStreaming
 
@@ -909,7 +909,7 @@ if (pGame && pStreaming) {
             CHook::CallFunction<void>(g_libGTASA+0x3D4134); //CGarages::Update();
 // 			CEntryExitManager::Update();
             CHook::CallFunction<void>(g_libGTASA+0x4304D0); //	CStuntJumpManager::Update();
-            // +fps((void (*)()) (g_libGTASA + 0x6C13F0))(); // CBirds::Update()
+            fps((void (*)()) (g_libGTASA + 0x6C13F0))(); // CBirds::Update()
             ((void (*)()) (g_libGTASA + 0x6E4A7C))(); // CSpecialFX::Update()
             // CRopes::Update();
         }
