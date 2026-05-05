@@ -628,9 +628,9 @@ void CGame::InitialiseOnceBeforeRW() {
     CHook::CallFunction<void>("_ZN4CPad10InitialiseEv");
 }
 
-void CameraSize(RwCamera* camera, RwRect* rect, RwReal viewWindow, RwReal aspectRatio) {
+/*void CameraSize(RwCamera* camera, RwRect* rect, RwReal viewWindow, RwReal aspectRatio) {
     CHook::CallFunction<void>(g_libGTASA + 0x6F7F84, camera, rect, viewWindow, aspectRatio);
-}
+}*/
 
 void CameraDestroy(RwCamera* camera) {
     CHook::CallFunction<void>(g_libGTASA + 0x6F80C0, camera);
@@ -704,7 +704,7 @@ bool CGame::InitialiseRenderWare() {
    // CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
 	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
     //CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 1.2f);
-	CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
+	//CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
     bb.inf = {-10'000.0f, -10'000.0f, -10'000.0f};
