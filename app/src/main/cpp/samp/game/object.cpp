@@ -95,15 +95,19 @@ CObject::~CObject()
 void CObject::Process(float fElapsedTime)
 {
 	// [Otimização] Se o objeto estiver muito longe, não processe física/movimento +fps
-    if (m_pEntity && pGame && pGame->GetCamera()) 
-{
-    // Pegando a posição da câmera através da matriz (padrão em muitas bases mobile)
-    CVector camPos = pGame->GetCamera()->GetMatrix().pos;
-    float fDist = m_pEntity->GetDistanceFromPoint(camPos);
-
-    if (fDist > 120.0f) return; // Limite de distância para processamento de física/movimento
-}
-
+    if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
+    {
+        CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
+        if (pLocal && pLocal->GetPlayerPed()) 
+        {
+            CVector pos = pLocal->GetPlayerPed()->GetPos();
+            
+            // Aplicando o formato correto x, y, z
+            float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
+            
+            if (fDist > 120.0f) return; 
+        }
+    }
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
 	{
 		if (pNetGame)
@@ -427,14 +431,19 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 void CObject::ProcessMaterialText()
 {
     // [Otimização Corrigida]
-    if (m_pEntity && pGame && pGame->GetCamera()) 
+    if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
     {
-        // Usando GetCamera() que você confirmou e pegando a posição da matriz
-        CVector camPos = pGame->GetCamera()->GetMatrix().pos; 
-        float fDist = m_pEntity->GetDistanceFromPoint(camPos);
-        
-        if (fDist > 60.0f) return; 
-    }
+        CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
+        if (pLocal && pLocal->GetPlayerPed()) 
+        {
+            CVector pos = pLocal->GetPlayerPed()->GetPos();
+            
+            // Usando o formato que você mandou: x, y, z separados
+            float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
+            
+            if (fDist > 60.0f) return; 
+        }
+	}
 
     for (int i = 0; i < 16; i++)
     {
