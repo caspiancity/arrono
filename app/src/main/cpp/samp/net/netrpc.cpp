@@ -5,6 +5,10 @@
 #include "../vendor/encoding/encoding.h"
 #include "../settings.h"
 
+//gps line
+#include "../game_sa/CGPSNavigator.h"
+extern CGPSNavigator* pGPSNavigator;
+
 extern UI* pUI;
 extern CGame *pGame;
 extern CNetGame *pNetGame;
@@ -1042,6 +1046,8 @@ void SetCheckpoint(RPCParameters* rpcParams)
 	vecSize.x = fSize;
 	vecSize.y = fSize;
 	vecSize.z = fSize;
+    //gps line
+	pGPSNavigator->SetTarget({ vecPos.x, vecPos.y, vecPos.z });
 
 	pGame->SetCheckpointInformation(&vecPos, &vecSize);
 	pGame->m_bCheckpointsEnabled = true;
@@ -1050,6 +1056,10 @@ void SetCheckpoint(RPCParameters* rpcParams)
 void DisableCheckpoint(RPCParameters* rpcParams)
 {
 	Log::traceLastFunc("[RPC-IN] Disable checkpoint");
+
+	//gps line
+	pGPSNavigator->Clear();
+	
 
 	pGame->m_bCheckpointsEnabled = false;
 }
