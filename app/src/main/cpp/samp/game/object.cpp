@@ -103,7 +103,7 @@ void CObject::Process(float fElapsedTime)
             CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
             float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
             
-            if (fDist > 180.0f) return; 
+           // if (fDist > 180.0f) return; 
         }
     }
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
