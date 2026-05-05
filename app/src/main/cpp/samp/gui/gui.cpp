@@ -16,6 +16,10 @@
 #include "game/Streaming.h"
 #include "game/Pools.h"
 
+//gps line
+#include "../game_sa/CGPSNavigator.h"
+extern CGPSNavigator* pGPSNavigator;
+
 extern CNetGame* pNetGame;
 extern CPlayerTags* pPlayerTags;
 extern UI* pUI;
@@ -139,7 +143,7 @@ void UI::drawList()
 	if (pPlayerTags) pPlayerTags->Render(renderer());
 	if (pNetGame && pNetGame->GetTextLabelPool()) pNetGame->GetTextLabelPool()->Render(renderer());
 	if (pNetGame && pNetGame->GetPlayerBubblePool()) pNetGame->GetPlayerBubblePool()->Render(renderer());
-
+    if (pGPSNavigator) pGPSNavigator->Render(); // gps lind
 	draw(renderer());
 }
 
