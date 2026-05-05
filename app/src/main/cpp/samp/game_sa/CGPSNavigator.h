@@ -1,6 +1,6 @@
 #pragma once
 //#include "Vector.h"
-#include "../game/game/Core/Vector.h"
+#include "../game/Core/Vector.h"
 
 class CGPSNavigator
 {
