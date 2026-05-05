@@ -704,8 +704,7 @@ bool CGame::InitialiseRenderWare() {
    // CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
 	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
     //CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 1.2f);
-	CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, DEFAULT_ASPECT_RATIO);
-
+	CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
     bb.inf = {-10'000.0f, -10'000.0f, -10'000.0f};
