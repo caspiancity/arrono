@@ -703,7 +703,8 @@ bool CGame::InitialiseRenderWare() {
     RwCameraSetNearClipPlane(Scene.m_pRwCamera, 0.9f);
    // CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
 	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
-    CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 1.2f);
+    //CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 1.2f);
+	CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, DEFAULT_ASPECT_RATIO);
 
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
@@ -721,7 +722,7 @@ bool CGame::InitialiseRenderWare() {
     CFont::Initialise();
     CHook::CallFunction<void>(g_libGTASA + 0x55C1C8); // CHud::Initialise();
     CHook::CallFunction<void>(g_libGTASA + 0x6D5970); // CPlayerSkin::Initialise();
-    CHook::CallFunction<void>(g_libGTASA + 0x6D6E30); // CPostEffects::Initialise();
+   // +fps CHook::CallFunction<void>(g_libGTASA + 0x6D6E30); // CPostEffects::Initialise();
     CGame::m_pWorkingMatrix1 = RwMatrixCreate();
     CGame::m_pWorkingMatrix2 = RwMatrixCreate();
 
@@ -900,7 +901,7 @@ if (pGame && pStreaming) {
 //			CTheCarGenerators::Process();
 //		CCranes::UpdateCranes();
 //		CClouds::Update();
-        ((void (*)()) (g_libGTASA + 0x6CA130))(); // CMovingThings::Update();
+        // +fps((void (*)()) (g_libGTASA + 0x6CA130))(); // CMovingThings::Update();
         ((void(*)())(g_libGTASA + 0x6F04CC))(); // CWaterCannons::Update()
 //		CUserDisplay::Process();
         ((void (*)()) (g_libGTASA + 0x50BE40))(); // CWorld::Process()
@@ -914,7 +915,7 @@ if (pGame && pStreaming) {
             CHook::CallFunction<void>(g_libGTASA+0x3D4134); //CGarages::Update();
 // 			CEntryExitManager::Update();
             CHook::CallFunction<void>(g_libGTASA+0x4304D0); //	CStuntJumpManager::Update();
-            ((void (*)()) (g_libGTASA + 0x6C13F0))(); // CBirds::Update()
+            // +fps((void (*)()) (g_libGTASA + 0x6C13F0))(); // CBirds::Update()
             ((void (*)()) (g_libGTASA + 0x6E4A7C))(); // CSpecialFX::Update()
             // CRopes::Update();
         }
