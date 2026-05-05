@@ -100,13 +100,10 @@ void CObject::Process(float fElapsedTime)
         CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
         if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
         {
-            // Na sua base o caminho é: pPlayerPed->m_pPed->GetMatrix().pos
-            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetMatrix().pos;
-            
-            // Passando os 3 floats (x, y, z) como sua função exige
+            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
             float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
             
-            if (fDist > 60.0f) return; 
+            if (fDist > 120.0f) return; 
         }
     }
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
@@ -431,15 +428,16 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 // +fps
 void CObject::ProcessMaterialText()
 {
-    // [Otimização Corrigida]
-if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
+    // [Otimização] Usando GetPosition() que você confirmou existir
+    if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
     {
         CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
         if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
         {
-            // Acessando a posição através do m_pPed que vimos no seu CPlayerPed::ProcessAttach
-            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetMatrix().pos;
+            // Agora usando o nome correto: GetPosition()
+            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
             
+            // Passando os 3 argumentos: x, y, z
             float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
             
             if (fDist > 60.0f) return; 
@@ -450,9 +448,7 @@ if (m_pEntity && pNetGame && pNetGame->GetPlayerPool())
     {
         if (m_iMaterialType[i] == MATERIAL_TYPE_TEXT && m_MaterialTextTexture[i] == 0)
         {
-            // Reduzimos a fonte para economizar VRAM no seu Redmi
             m_iMaterialFontSize[i] *= 0.50f; 
-            
             m_MaterialTextTexture[i] = reinterpret_cast<uintptr_t>(pMaterialTextGenerator->Generate(
                     m_szMaterialText[i], m_iMaterialSize[i], m_iMaterialFontSize[i],
                     false, m_dwMaterialFontColor[i], m_dwMaterialBackColor[i],
