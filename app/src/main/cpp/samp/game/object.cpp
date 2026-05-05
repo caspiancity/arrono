@@ -95,10 +95,14 @@ CObject::~CObject()
 void CObject::Process(float fElapsedTime)
 {
 	// [Otimização] Se o objeto estiver muito longe, não processe física/movimento +fps
-    if (m_pEntity) {
-        float fDist = m_pEntity->GetDistanceFromPoint(pGame->GetActiveCamera()->GetPos());
-        if (fDist > 60.0f) return; 
-	}
+    if (m_pEntity && pGame && pGame->GetCamera()) 
+{
+    // Pegando a posição da câmera através da matriz (padrão em muitas bases mobile)
+    CVector camPos = pGame->GetCamera()->GetMatrix().pos;
+    float fDist = m_pEntity->GetDistanceFromPoint(camPos);
+
+    if (fDist > 120.0f) return; // Limite de distância para processamento de física/movimento
+}
 
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
 	{
@@ -422,9 +426,13 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 // +fps
 void CObject::ProcessMaterialText()
 {
-    // [Otimização] Só processa se o objeto estiver a menos de 60 metros
-    if (m_pEntity) {
-        float fDist = m_pEntity->GetDistanceFromPoint(pGame->GetActiveCamera()->GetPos());
+    // [Otimização Corrigida]
+    if (m_pEntity && pGame && pGame->GetCamera()) 
+    {
+        // Usando GetCamera() que você confirmou e pegando a posição da matriz
+        CVector camPos = pGame->GetCamera()->GetMatrix().pos; 
+        float fDist = m_pEntity->GetDistanceFromPoint(camPos);
+        
         if (fDist > 60.0f) return; 
     }
 
@@ -432,7 +440,7 @@ void CObject::ProcessMaterialText()
     {
         if (m_iMaterialType[i] == MATERIAL_TYPE_TEXT && m_MaterialTextTexture[i] == 0)
         {
-            // [Otimização] Reduzimos a fonte em 50% para mobile (mais leve para a GPU)
+            // Reduzimos a fonte para economizar VRAM no seu Redmi
             m_iMaterialFontSize[i] *= 0.50f; 
             
             m_MaterialTextTexture[i] = reinterpret_cast<uintptr_t>(pMaterialTextGenerator->Generate(
