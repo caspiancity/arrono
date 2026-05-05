@@ -887,12 +887,8 @@ if (pGame && pStreaming) {
         ((void (*)(uintptr_t *)) (g_libGTASA + 0x4D361C))(gFireManager); // CFireManager::Update
 
         // FIXME: add if
-       // ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
-        static int popTick = 0;         //fix +fps diminuir a frequência de atualização de NPC
-        if(popTick++ >= 3) {
-            ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); 
-            popTick = 0;
-        }
+        ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
+        
         
         ((void (*)()) (g_libGTASA + 0x700AF4))(); // CWeapon::UpdateWeapons()
 //		if ( !CCutsceneMgr::ms_running )
