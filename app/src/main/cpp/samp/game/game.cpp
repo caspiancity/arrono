@@ -728,7 +728,7 @@ bool CGame::InitialiseRenderWare() {
     CFont::Initialise();
     CHook::CallFunction<void>(g_libGTASA + 0x55C1C8); // CHud::Initialise();
     CHook::CallFunction<void>(g_libGTASA + 0x6D5970); // CPlayerSkin::Initialise();
-   // +fps CHook::CallFunction<void>(g_libGTASA + 0x6D6E30); // CPostEffects::Initialise();
+    CHook::CallFunction<void>(g_libGTASA + 0x6D6E30); // CPostEffects::Initialise();
     CGame::m_pWorkingMatrix1 = RwMatrixCreate();
     CGame::m_pWorkingMatrix2 = RwMatrixCreate();
 
@@ -783,19 +783,26 @@ void CGame::Process() {
             pObjectPool->Process();
             pObjectPool->ProcessMaterialText();
         }*/
-        CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
-        if (pObjectPool) {
-            // Otimização: Só processa objetos se não estiver em pausa
-            if (!CTimer::m_CodePause) {
-                pObjectPool->Process();
-            }
-            // MaterialText é pesado, você pode limitar a frequência também
-            static int matTick = 0;
-            if(matTick++ >= 5) { 
-                pObjectPool->ProcessMaterialText();
-                matTick = 0;
-            }
-        }
+        CObjectPool* pObjectPool = pNetGame->GetObjectPool(); 
+
+if (pObjectPool) {
+    // 1. Processamento de Física: SEMPRE execute. 
+    // Remova o check de m_CodePause para garantir colisão estável
+    pObjectPool->Process();
+
+    // 2. Otimização de MaterialText (O verdadeiro comedor de FPS)
+    // Em vez de pular frames (ticks), podemos usar o tempo real para ser mais suave
+    static uint32_t lastMatUpdate = 0;
+    uint32_t currentTick = GetTickCount(); // Ou use o CTimer::m_snTimeInMilliseconds
+
+    // Atualiza o texto a cada 100ms (10 vezes por segundo)
+    // Isso é imperceptível ao olho humano mas salva muita CPU
+    if (currentTick - lastMatUpdate >= 100) { 
+		//pObjectPool->Process();
+        pObjectPool->ProcessMaterialText();
+        lastMatUpdate = currentTick;
+    }
+}
 
         CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
         if (pTextDrawPool) {
@@ -907,7 +914,7 @@ if (pGame && pStreaming) {
 //			CTheCarGenerators::Process();
 //		CCranes::UpdateCranes();
 //		CClouds::Update();
-        // +fps((void (*)()) (g_libGTASA + 0x6CA130))(); // CMovingThings::Update();
+        ((void (*)()) (g_libGTASA + 0x6CA130))(); // CMovingThings::Update();
         ((void(*)())(g_libGTASA + 0x6F04CC))(); // CWaterCannons::Update()
 //		CUserDisplay::Process();
         ((void (*)()) (g_libGTASA + 0x50BE40))(); // CWorld::Process()
