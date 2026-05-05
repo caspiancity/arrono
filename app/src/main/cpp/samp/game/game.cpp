@@ -699,7 +699,7 @@ bool CGame::InitialiseRenderWare() {
     Scene.m_pRwCamera = camera;
     TheCamera.Init();
     TheCamera.SetRwCamera(Scene.m_pRwCamera);
-    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 800.0f);
+    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 1500.0f);
     RwCameraSetNearClipPlane(Scene.m_pRwCamera, 0.9f);
    // CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
 	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
