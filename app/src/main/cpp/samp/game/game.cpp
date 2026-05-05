@@ -783,26 +783,11 @@ void CGame::Process() {
             pObjectPool->Process();
             pObjectPool->ProcessMaterialText();
         }*/
-        CObjectPool* pObjectPool = pNetGame->GetObjectPool(); 
-
-if (pObjectPool) {
-    // 1. Processamento de Física: SEMPRE execute. 
-    // Remova o check de m_CodePause para garantir colisão estável
-    pObjectPool->Process();
-
-    // 2. Otimização de MaterialText (O verdadeiro comedor de FPS)
-    // Em vez de pular frames (ticks), podemos usar o tempo real para ser mais suave
-    static uint32_t lastMatUpdate = 0;
-    uint32_t currentTick = GetTickCount(); // Ou use o CTimer::m_snTimeInMilliseconds
-
-    // Atualiza o texto a cada 100ms (10 vezes por segundo)
-    // Isso é imperceptível ao olho humano mas salva muita CPU
-    if (currentTick - lastMatUpdate >= 100) { 
-		//pObjectPool->Process();
-        pObjectPool->ProcessMaterialText();
-        lastMatUpdate = currentTick;
-    }
-}
+		CObjectPool* pObjectPool = pNetGame->GetObjectPool();
+        if (pObjectPool) {
+            pObjectPool->Process();
+            pObjectPool->ProcessMaterialText();
+        }
 
         CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
         if (pTextDrawPool) {
