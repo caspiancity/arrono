@@ -600,52 +600,51 @@ KeyboardLayoutLowerRU::KeyboardLayoutLowerRU()
 {
 
 }
-
 void KeyboardLayoutLowerRU::performLayout()
 {
-	m_rows[0]->setPadding(0.0f);
-	m_rows[0]->setSpacing(0.0f);
-	m_rows[0]->addKey(Encoding::cp2utf("é"), 'é');
-	m_rows[0]->addKey(Encoding::cp2utf("ö"), 'ö');
-	m_rows[0]->addKey(Encoding::cp2utf("ó"), 'ó');
-	m_rows[0]->addKey(Encoding::cp2utf("ê"), 'ê');
-	m_rows[0]->addKey(Encoding::cp2utf("å"), 'å');
-	m_rows[0]->addKey(Encoding::cp2utf("í"), 'í');
-	m_rows[0]->addKey(Encoding::cp2utf("ã"), 'ã');
-	m_rows[0]->addKey(Encoding::cp2utf("ø"), 'ø');
-	m_rows[0]->addKey(Encoding::cp2utf("ù"), 'ù');
-	m_rows[0]->addKey(Encoding::cp2utf("ç"), 'ç');
-	m_rows[0]->addKey(Encoding::cp2utf("õ"), 'õ');
+    m_rows[0]->setPadding(0.0f);
+    m_rows[0]->setSpacing(0.0f);
+    // Substituindo caracteres grandes por seus códigos hexadecimais (CP1252)
+    m_rows[0]->addKey(Encoding::cp2utf("é"), 0xE9);
+    m_rows[0]->addKey(Encoding::cp2utf("ö"), 0xF6);
+    m_rows[0]->addKey(Encoding::cp2utf("ó"), 0xF3);
+    m_rows[0]->addKey(Encoding::cp2utf("ê"), 0xEA);
+    m_rows[0]->addKey(Encoding::cp2utf("å"), 0xE5);
+    m_rows[0]->addKey(Encoding::cp2utf("í"), 0xED);
+    m_rows[0]->addKey(Encoding::cp2utf("ã"), 0xE3);
+    m_rows[0]->addKey(Encoding::cp2utf("ø"), 0xF8);
+    m_rows[0]->addKey(Encoding::cp2utf("ù"), 0xF9);
+    m_rows[0]->addKey(Encoding::cp2utf("ç"), 0xE7);
+    m_rows[0]->addKey(Encoding::cp2utf("õ"), 0xF5);
 
-	m_rows[1]->setPadding(0.0f);
-	m_rows[1]->setSpacing(0.0f);
-	m_rows[1]->addKey(Encoding::cp2utf("ô"), 'ô');
-	m_rows[1]->addKey(Encoding::cp2utf("û"), 'û');
-	m_rows[1]->addKey(Encoding::cp2utf("â"), 'â');
-	m_rows[1]->addKey(Encoding::cp2utf("à"), 'à');
-	m_rows[1]->addKey(Encoding::cp2utf("ï"), 'ï');
-	m_rows[1]->addKey(Encoding::cp2utf("ð"), 'ð');
-	m_rows[1]->addKey(Encoding::cp2utf("î"), 'î');
-	m_rows[1]->addKey(Encoding::cp2utf("ë"), 'ë');
-	m_rows[1]->addKey(Encoding::cp2utf("ä"), 'ä');
-	m_rows[1]->addKey(Encoding::cp2utf("æ"), 'æ');
-	m_rows[1]->addKey(Encoding::cp2utf("ý"), 'ý');
+    m_rows[1]->setPadding(0.0f);
+    m_rows[1]->setSpacing(0.0f);
+    m_rows[1]->addKey(Encoding::cp2utf("ô"), 0xF4);
+    m_rows[1]->addKey(Encoding::cp2utf("û"), 0xFB);
+    m_rows[1]->addKey(Encoding::cp2utf("â"), 0xE2);
+    m_rows[1]->addKey(Encoding::cp2utf("à"), 0xE0);
+    m_rows[1]->addKey(Encoding::cp2utf("ï"), 0xEF);
+    m_rows[1]->addKey(Encoding::cp2utf("ð"), 0xF0);
+    m_rows[1]->addKey(Encoding::cp2utf("î"), 0xEE);
+    m_rows[1]->addKey(Encoding::cp2utf("ë"), 0xEB);
+    m_rows[1]->addKey(Encoding::cp2utf("ä"), 0xE4);
+    m_rows[1]->addKey(Encoding::cp2utf("æ"), 0xE6);
+    m_rows[1]->addKey(Encoding::cp2utf("ý"), 0xFD);
 
-	ImVec2 keySize = ImVec2(width() / 11, UISettings::keyboardRowHeight());
-	m_rows[2]->setPadding(0.0f);
-	m_rows[2]->setSpacing(0.0f);
-	m_rows[2]->addKey(ExtendedKey::SHIFT_ON)->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
-	m_rows[2]->addKey(Encoding::cp2utf("ÿ"), 'ÿ');
-	m_rows[2]->addKey(Encoding::cp2utf("÷"), '÷');
-	m_rows[2]->addKey(Encoding::cp2utf("ñ"), 'ñ');
-	m_rows[2]->addKey(Encoding::cp2utf("ì"), 'ì');
-	m_rows[2]->addKey(Encoding::cp2utf("è"), 'è');
-	m_rows[2]->addKey(Encoding::cp2utf("ò"), 'ò');
-	m_rows[2]->addKey(Encoding::cp2utf("ü"), 'ü');
-	m_rows[2]->addKey(Encoding::cp2utf("á"), 'á');
-	m_rows[2]->addKey(Encoding::cp2utf("þ"), 'þ');
-	m_rows[2]->addKey(ExtendedKey::BACKSPACE)->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
-
+    ImVec2 keySize = ImVec2(width() / 11, UISettings::keyboardRowHeight());
+    m_rows[2]->setPadding(0.0f);
+    m_rows[2]->setSpacing(0.0f);
+    m_rows[2]->addKey(ExtendedKey::SHIFT_ON)->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
+    m_rows[2]->addKey(Encoding::cp2utf("ÿ"), 0xFF);
+    m_rows[2]->addKey(Encoding::cp2utf("÷"), 0xF7);
+    m_rows[2]->addKey(Encoding::cp2utf("ñ"), 0xF1);
+    m_rows[2]->addKey(Encoding::cp2utf("ì"), 0xEC);
+    m_rows[2]->addKey(Encoding::cp2utf("è"), 0xE8);
+    m_rows[2]->addKey(Encoding::cp2utf("ò"), 0xF2);
+    m_rows[2]->addKey(Encoding::cp2utf("ü"), 0xFC);
+    m_rows[2]->addKey(Encoding::cp2utf("á"), 0xE1);
+    m_rows[2]->addKey(Encoding::cp2utf("þ"), 0xFE);
+    m_rows[2]->addKey(ExtendedKey::BACKSPACE)->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
 	m_rows[3]->setPadding(0.0f);
 	m_rows[3]->setSpacing(0.0f);
 	//m_rows[4]->addKey(std::string ("/", '/')->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
