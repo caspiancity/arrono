@@ -58,28 +58,30 @@ Keyboard::Keyboard()
 
 void Keyboard::performLayout()
 {
-	m_input->setFixedSize(ImVec2(width(), UISettings::keyboardRowHeight()));
-	m_input->setPosition(ImVec2(0.0f, 0.0f));
+    m_input->setFixedSize(ImVec2(width(), UISettings::keyboardRowHeight()));
+    m_input->setPosition(ImVec2(0.0f, 0.0f));
 
-	/* ENG */
-	m_layoutLowerENG->setFixedSize(ImVec2(width(), height() - m_input->height()+50.0f));
-	m_layoutLowerENG->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
-	m_layoutUpperENG->setFixedSize(ImVec2(width(), height() - m_input->height()+50.0f));
-	m_layoutUpperENG->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
+    /* O correto Ã© subtrair a altura do input do total, sem somar valores fixos */
+    float layoutHeight = height() - m_input->height();
 
-	/* RU */
-	m_layoutLowerRU->setFixedSize(ImVec2(width(), height() - m_input->height()+50.0f));
-	m_layoutLowerRU->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
-	m_layoutUpperRU->setFixedSize(ImVec2(width(), height() - m_input->height()+50.0f));
-	m_layoutUpperRU->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
+    /* ENG */
+    m_layoutLowerENG->setFixedSize(ImVec2(width(), layoutHeight));
+    m_layoutLowerENG->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
+    m_layoutUpperENG->setFixedSize(ImVec2(width(), layoutHeight));
+    m_layoutUpperENG->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
 
-	/* NUM */
-	m_layoutNUM->setFixedSize(ImVec2(width(), height() - m_input->height()+50.0f));
-	m_layoutNUM->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
+    /* RU */
+    m_layoutLowerRU->setFixedSize(ImVec2(width(), layoutHeight));
+    m_layoutLowerRU->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
+    m_layoutUpperRU->setFixedSize(ImVec2(width(), layoutHeight));
+    m_layoutUpperRU->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
 
-	Widget::performLayout();
+    /* NUM */
+    m_layoutNUM->setFixedSize(ImVec2(width(), layoutHeight));
+    m_layoutNUM->setPosition(ImVec2(0.0f, UISettings::keyboardRowHeight()));
+
+    Widget::performLayout();
 }
-
 void Keyboard::draw(ImGuiRenderer* renderer)
 {
 	renderer->drawRect(absolutePosition(), absolutePosition() + size(), UISettings::keyboardBackgroundColor(), true);
@@ -603,45 +605,45 @@ void KeyboardLayoutLowerRU::performLayout()
 {
 	m_rows[0]->setPadding(0.0f);
 	m_rows[0]->setSpacing(0.0f);
-	m_rows[0]->addKey(Encoding::cp2utf("é"), 'é');
-	m_rows[0]->addKey(Encoding::cp2utf("ö"), 'ö');
-	m_rows[0]->addKey(Encoding::cp2utf("ó"), 'ó');
-	m_rows[0]->addKey(Encoding::cp2utf("ê"), 'ê');
-	m_rows[0]->addKey(Encoding::cp2utf("å"), 'å');
-	m_rows[0]->addKey(Encoding::cp2utf("í"), 'í');
-	m_rows[0]->addKey(Encoding::cp2utf("ã"), 'ã');
-	m_rows[0]->addKey(Encoding::cp2utf("ø"), 'ø');
-	m_rows[0]->addKey(Encoding::cp2utf("ù"), 'ù');
-	m_rows[0]->addKey(Encoding::cp2utf("ç"), 'ç');
-	m_rows[0]->addKey(Encoding::cp2utf("õ"), 'õ');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã©"), 'Ã©');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã¶"), 'Ã¶');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã³"), 'Ã³');
+	m_rows[0]->addKey(Encoding::cp2utf("Ãª"), 'Ãª');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã¥"), 'Ã¥');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã­"), 'Ã­');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã£"), 'Ã£');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã¸"), 'Ã¸');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã¹"), 'Ã¹');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã§"), 'Ã§');
+	m_rows[0]->addKey(Encoding::cp2utf("Ãµ"), 'Ãµ');
 
 	m_rows[1]->setPadding(0.0f);
 	m_rows[1]->setSpacing(0.0f);
-	m_rows[1]->addKey(Encoding::cp2utf("ô"), 'ô');
-	m_rows[1]->addKey(Encoding::cp2utf("û"), 'û');
-	m_rows[1]->addKey(Encoding::cp2utf("â"), 'â');
-	m_rows[1]->addKey(Encoding::cp2utf("à"), 'à');
-	m_rows[1]->addKey(Encoding::cp2utf("ï"), 'ï');
-	m_rows[1]->addKey(Encoding::cp2utf("ð"), 'ð');
-	m_rows[1]->addKey(Encoding::cp2utf("î"), 'î');
-	m_rows[1]->addKey(Encoding::cp2utf("ë"), 'ë');
-	m_rows[1]->addKey(Encoding::cp2utf("ä"), 'ä');
-	m_rows[1]->addKey(Encoding::cp2utf("æ"), 'æ');
-	m_rows[1]->addKey(Encoding::cp2utf("ý"), 'ý');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã´"), 'Ã´');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã»"), 'Ã»');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã¢"), 'Ã¢');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã "), 'Ã ');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã¯"), 'Ã¯');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã°"), 'Ã°');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã®"), 'Ã®');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã«"), 'Ã«');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã¤"), 'Ã¤');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã¦"), 'Ã¦');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã½"), 'Ã½');
 
 	ImVec2 keySize = ImVec2(width() / 11, UISettings::keyboardRowHeight());
 	m_rows[2]->setPadding(0.0f);
 	m_rows[2]->setSpacing(0.0f);
 	m_rows[2]->addKey(ExtendedKey::SHIFT_ON)->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
-	m_rows[2]->addKey(Encoding::cp2utf("ÿ"), 'ÿ');
-	m_rows[2]->addKey(Encoding::cp2utf("÷"), '÷');
-	m_rows[2]->addKey(Encoding::cp2utf("ñ"), 'ñ');
-	m_rows[2]->addKey(Encoding::cp2utf("ì"), 'ì');
-	m_rows[2]->addKey(Encoding::cp2utf("è"), 'è');
-	m_rows[2]->addKey(Encoding::cp2utf("ò"), 'ò');
-	m_rows[2]->addKey(Encoding::cp2utf("ü"), 'ü');
-	m_rows[2]->addKey(Encoding::cp2utf("á"), 'á');
-	m_rows[2]->addKey(Encoding::cp2utf("þ"), 'þ');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã¿"), 'Ã¿');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã·"), 'Ã·');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã±"), 'Ã±');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã¬"), 'Ã¬');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã¨"), 'Ã¨');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã²"), 'Ã²');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã¼"), 'Ã¼');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã¡"), 'Ã¡');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã¾"), 'Ã¾');
 	m_rows[2]->addKey(ExtendedKey::BACKSPACE)->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
 
 	m_rows[3]->setPadding(0.0f);
@@ -673,45 +675,45 @@ void KeyboardLayoutUpperRU::performLayout()
 {
 	m_rows[0]->setPadding(0.0f);
 	m_rows[0]->setSpacing(0.0f);
-	m_rows[0]->addKey(Encoding::cp2utf("É"), 'É');
-	m_rows[0]->addKey(Encoding::cp2utf("Ö"), 'Ö');
-	m_rows[0]->addKey(Encoding::cp2utf("Ó"), 'Ó');
-	m_rows[0]->addKey(Encoding::cp2utf("Ê"), 'Ê');
-	m_rows[0]->addKey(Encoding::cp2utf("Å"), 'Å');
-	m_rows[0]->addKey(Encoding::cp2utf("Í"), 'Í');
-	m_rows[0]->addKey(Encoding::cp2utf("Ã"), 'Ã');
-	m_rows[0]->addKey(Encoding::cp2utf("Ø"), 'Ø');
-	m_rows[0]->addKey(Encoding::cp2utf("Ù"), 'Ù');
-	m_rows[0]->addKey(Encoding::cp2utf("Ç"), 'Ç');
-	m_rows[0]->addKey(Encoding::cp2utf("Õ"), 'Õ');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã‰"), 'Ã‰');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã–"), 'Ã–');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã“"), 'Ã“');
+	m_rows[0]->addKey(Encoding::cp2utf("ÃŠ"), 'ÃŠ');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã…"), 'Ã…');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã"), 'Ã');
+	m_rows[0]->addKey(Encoding::cp2utf("Ãƒ"), 'Ãƒ');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã˜"), 'Ã˜');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã™"), 'Ã™');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã‡"), 'Ã‡');
+	m_rows[0]->addKey(Encoding::cp2utf("Ã•"), 'Ã•');
 
 	m_rows[1]->setPadding(0.0f);
 	m_rows[1]->setSpacing(0.0f);
-	m_rows[1]->addKey(Encoding::cp2utf("Ô"), 'Ô');
-	m_rows[1]->addKey(Encoding::cp2utf("Û"), 'Û');
-	m_rows[1]->addKey(Encoding::cp2utf("Â"), 'Â');
-	m_rows[1]->addKey(Encoding::cp2utf("À"), 'À');
-	m_rows[1]->addKey(Encoding::cp2utf("Ï"), 'Ï');
-	m_rows[1]->addKey(Encoding::cp2utf("Ð"), 'Ð');
-	m_rows[1]->addKey(Encoding::cp2utf("Î"), 'Î');
-	m_rows[1]->addKey(Encoding::cp2utf("Ë"), 'Ë');
-	m_rows[1]->addKey(Encoding::cp2utf("Ä"), 'Ä');
-	m_rows[1]->addKey(Encoding::cp2utf("Æ"), 'Æ');
-	m_rows[1]->addKey(Encoding::cp2utf("Ý"), 'Ý');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã”"), 'Ã”');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã›"), 'Ã›');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã‚"), 'Ã‚');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã€"), 'Ã€');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã"), 'Ã');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã"), 'Ã');
+	m_rows[1]->addKey(Encoding::cp2utf("ÃŽ"), 'ÃŽ');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã‹"), 'Ã‹');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã„"), 'Ã„');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã†"), 'Ã†');
+	m_rows[1]->addKey(Encoding::cp2utf("Ã"), 'Ã');
 
 	ImVec2 keySize = ImVec2(width() / 11, UISettings::keyboardRowHeight());
 	m_rows[2]->setPadding(0.0f);
 	m_rows[2]->setSpacing(0.0f);
 	m_rows[2]->addKey(ExtendedKey::SHIFT_ON)->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
-	m_rows[2]->addKey(Encoding::cp2utf("ß"), 'ß');
-	m_rows[2]->addKey(Encoding::cp2utf("×"), '×');
-	m_rows[2]->addKey(Encoding::cp2utf("Ñ"), 'Ñ');
-	m_rows[2]->addKey(Encoding::cp2utf("Ì"), 'Ì');
-	m_rows[2]->addKey(Encoding::cp2utf("È"), 'È');
-	m_rows[2]->addKey(Encoding::cp2utf("Ò"), 'Ò');
-	m_rows[2]->addKey(Encoding::cp2utf("Ü"), 'Ü');
-	m_rows[2]->addKey(Encoding::cp2utf("Á"), 'Á');
-	m_rows[2]->addKey(Encoding::cp2utf("Þ"), 'Þ');
+	m_rows[2]->addKey(Encoding::cp2utf("ÃŸ"), 'ÃŸ');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã—"), 'Ã—');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã‘"), 'Ã‘');
+	m_rows[2]->addKey(Encoding::cp2utf("ÃŒ"), 'ÃŒ');
+	m_rows[2]->addKey(Encoding::cp2utf("Ãˆ"), 'Ãˆ');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã’"), 'Ã’');
+	m_rows[2]->addKey(Encoding::cp2utf("Ãœ"), 'Ãœ');
+	m_rows[2]->addKey(Encoding::cp2utf("Ã"), 'Ã');
+	m_rows[2]->addKey(Encoding::cp2utf("Ãž"), 'Ãž');
 	m_rows[2]->addKey(ExtendedKey::BACKSPACE)->setFixedSize(ImVec2(keySize.x * 1.5f, 0.0f));
 
 	m_rows[3]->setPadding(0.0f);
