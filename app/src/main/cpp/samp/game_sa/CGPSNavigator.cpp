@@ -32,48 +32,60 @@ void CGPSNavigator::Clear()
     FLog("CGPSNavigator::Clear");
 }
 
+
 void CGPSNavigator::Render()
 {
     if (!m_bActive) return;
 
-    // แปลงตำแหน่ง 3D -> 2D
-    CVector vecScreen;
-    ((void (*)(CVector*, CVector*, float*, float*, bool, bool))(g_libGTASA + 0x6E9DF8))(&m_vecTarget, &vecScreen, 0, 0, 0, 0);
-
-    if (vecScreen.z < 1.0f) return;
-
-    // ขนาด icon
-    float size = 64.0f;
-    float x = vecScreen.x - size * 0.5f;
-    float y = vecScreen.y - size * 0.5f;
-
-    // วาด icon
-    ImGui::GetBackgroundDrawList()->AddImage((ImTextureID)texId->raster, ImVec2(x, y), ImVec2(x + size, y + size));
-
-    // คำนวณระยะ
+    // 1. Verificação de segurança (essencial no Android 15)
     if (!pGame || !pGame->FindPlayerPed() || !pGame->FindPlayerPed()->m_pPed) return;
 
-    CVector playerPos = pGame->FindPlayerPed()->m_pPed->m_matrix->m_pos;
+    CVector vecScreen;
+    float w, h; 
+    
+    // 2. Chamada corrigida baseada no seu dump:
+    // CSprite::CalcScreenCoors(CVector const&, CVector*, float*, float*, bool, bool)
+    typedef bool (*CalcScreenCoors_t)(const CVector&, CVector*, float*, float*, bool, bool);
+    CalcScreenCoors_t CalcScreenCoors = (CalcScreenCoors_t)(g_libGTASA + 0x6E9DF8);
+    
+    // Chamando com todos os argumentos que o dump mostrou
+    if (!CalcScreenCoors(m_vecTarget, &vecScreen, &w, &h, true, true)) return;
+
+    // Se o ponto estiver atrás da câmera, vecScreen.z geralmente é < 1.0
+    if (vecScreen.z < 1.0f) return;
+
+    // 3. Pegando a posição com GetPosition() que confirmamos ser o correto
+    CVector playerPos = pGame->FindPlayerPed()->m_pPed->GetPosition();
+
+    // 4. Cálculo de distância
     float dist = sqrtf(
         (playerPos.x - m_vecTarget.x) * (playerPos.x - m_vecTarget.x) +
         (playerPos.y - m_vecTarget.y) * (playerPos.y - m_vecTarget.y) +
         (playerPos.z - m_vecTarget.z) * (playerPos.z - m_vecTarget.z)
     );
 
-    // สร้างข้อความ
-    char szText[32];
-    // แปลงข้อความตามระยะ (m หรือ km)
-    if (dist < 1000.0f)
-    snprintf(szText, sizeof(szText), "ระยะ: %.2f m", dist);
-    else
-    snprintf(szText, sizeof(szText), "ระยะ: %.2f km", dist / 1000.0f);
+    // 5. Desenho com ImGui
+    if(texId && texId->raster) 
+    {
+        float size = 64.0f;
+        ImVec2 posIcon(vecScreen.x - size * 0.5f, vecScreen.y - size * 0.5f);
+        
+        ImGui::GetBackgroundDrawList()->AddImage(
+            (ImTextureID)texId->raster, 
+            posIcon, 
+            ImVec2(posIcon.x + size, posIcon.y + size)
+        );
 
-    // แสดงข้อความตรงกลางไอคอน
-    ImVec2 textSize = ImGui::CalcTextSize(szText);
-    float textX = vecScreen.x - textSize.x * 0.5f;
-    float textY = y + size + 4.0f;
+        // Texto de distância
+        char szText[32];
+        if (dist < 1000.0f) snprintf(szText, sizeof(szText), "%.0fm", dist);
+        else snprintf(szText, sizeof(szText), "%.2fkm", dist / 1000.0f);
 
-    ImGui::GetBackgroundDrawList()->AddText(ImVec2(textX, textY), IM_COL32(255, 255, 255, 255), szText);
-
-    FLog("CGPSNavigator::Render");
+        ImVec2 textSize = ImGui::CalcTextSize(szText);
+        ImGui::GetBackgroundDrawList()->AddText(
+            ImVec2(vecScreen.x - textSize.x * 0.5f, posIcon.y + size + 2.0f), 
+            IM_COL32(255, 255, 255, 255), 
+            szText
+        );
+    }
 }
