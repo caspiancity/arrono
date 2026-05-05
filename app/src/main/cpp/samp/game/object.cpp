@@ -103,7 +103,7 @@ void CObject::Process(float fElapsedTime)
             CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
             float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
             
-            if (fDist > 120.0f) return; 
+            if (fDist > 180.0f) return; 
         }
     }
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
@@ -448,7 +448,7 @@ void CObject::ProcessMaterialText()
     {
         if (m_iMaterialType[i] == MATERIAL_TYPE_TEXT && m_MaterialTextTexture[i] == 0)
         {
-            m_iMaterialFontSize[i] *= 0.50f; 
+            m_iMaterialFontSize[i] *= 0.75f; 
             m_MaterialTextTexture[i] = reinterpret_cast<uintptr_t>(pMaterialTextGenerator->Generate(
                     m_szMaterialText[i], m_iMaterialSize[i], m_iMaterialFontSize[i],
                     false, m_dwMaterialFontColor[i], m_dwMaterialBackColor[i],
