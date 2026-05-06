@@ -710,7 +710,7 @@ bool CGame::InitialiseRenderWare() {
     float screenAspect = (float)RsGlobal->maximumWidth / (float)RsGlobal->maximumHeight;
     
     // 0.5f a 0.7f é o padrão. Se colocar muito alto, pesa na GPU.
-  //  CameraSize(Scene.m_pRwCamera, nullptr, 0.6f, screenAspect);
+    CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, screenAspect);
 	}
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
