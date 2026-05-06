@@ -699,7 +699,7 @@ bool CGame::InitialiseRenderWare() {
     Scene.m_pRwCamera = camera;
     TheCamera.Init();
     TheCamera.SetRwCamera(Scene.m_pRwCamera);
-    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 1500.0f);
+    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 800.0f);
     RwCameraSetNearClipPlane(Scene.m_pRwCamera, 0.9f);
    // CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
 	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
@@ -728,7 +728,7 @@ bool CGame::InitialiseRenderWare() {
     CFont::Initialise();
     CHook::CallFunction<void>(g_libGTASA + 0x55C1C8); // CHud::Initialise();
     CHook::CallFunction<void>(g_libGTASA + 0x6D5970); // CPlayerSkin::Initialise();
-    CHook::CallFunction<void>(g_libGTASA + 0x6D6E30); // CPostEffects::Initialise();
+   // +fps CHook::CallFunction<void>(g_libGTASA + 0x6D6E30); // CPostEffects::Initialise();
     CGame::m_pWorkingMatrix1 = RwMatrixCreate();
     CGame::m_pWorkingMatrix2 = RwMatrixCreate();
 
@@ -778,16 +778,24 @@ void CGame::Process() {
                 pUI->buttonpanel()->m_bH->setCaption("H");
         }
 
-       /* CObjectPool* pObjectPool = pNetGame->GetObjectPool();
-        if (pObjectPool) {
-            pObjectPool->Process();
-            pObjectPool->ProcessMaterialText();
-        }*/
-		CObjectPool* pObjectPool = pNetGame->GetObjectPool();
+        CObjectPool* pObjectPool = pNetGame->GetObjectPool();
         if (pObjectPool) {
             pObjectPool->Process();
             pObjectPool->ProcessMaterialText();
         }
+     /*   CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
+        if (pObjectPool) {
+            // Otimização: Só processa objetos se não estiver em pausa
+            if (!CTimer::m_CodePause) {
+                pObjectPool->Process();
+            }
+            // MaterialText é pesado, você pode limitar a frequência também
+            static int matTick = 0;
+            if(matTick++ >= 5) { 
+                pObjectPool->ProcessMaterialText();
+                matTick = 0;
+            }
+        }*/
 
         CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
         if (pTextDrawPool) {
@@ -812,7 +820,6 @@ void CGame::Process() {
     v1 = CurrentTimeInCycles / CTimer::GetCyclesPerMillisecond();
 
     CStreaming::Update();
-	//pStreaming->Update();
     //fix mas fps
     // No game.cpp
 /*static int streamingTick = 0;
@@ -888,15 +895,19 @@ if (pGame && pStreaming) {
         ((void (*)(uintptr_t *)) (g_libGTASA + 0x4D361C))(gFireManager); // CFireManager::Update
 
         // FIXME: add if
-        ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
-        
+       // ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
+        static int popTick = 0;         //fix +fps diminuir a frequência de atualização de NPC
+        if(popTick++ >= 3) {
+            ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); 
+            popTick = 0;
+        }
         
         ((void (*)()) (g_libGTASA + 0x700AF4))(); // CWeapon::UpdateWeapons()
 //		if ( !CCutsceneMgr::ms_running )
 //			CTheCarGenerators::Process();
 //		CCranes::UpdateCranes();
 //		CClouds::Update();
-        ((void (*)()) (g_libGTASA + 0x6CA130))(); // CMovingThings::Update();
+        // +fps((void (*)()) (g_libGTASA + 0x6CA130))(); // CMovingThings::Update();
         ((void(*)())(g_libGTASA + 0x6F04CC))(); // CWaterCannons::Update()
 //		CUserDisplay::Process();
         ((void (*)()) (g_libGTASA + 0x50BE40))(); // CWorld::Process()
@@ -910,11 +921,11 @@ if (pGame && pStreaming) {
             CHook::CallFunction<void>(g_libGTASA+0x3D4134); //CGarages::Update();
 // 			CEntryExitManager::Update();
             CHook::CallFunction<void>(g_libGTASA+0x4304D0); //	CStuntJumpManager::Update();
-            ((void (*)()) (g_libGTASA + 0x6C13F0))(); // CBirds::Update()
+            // +fps((void (*)()) (g_libGTASA + 0x6C13F0))(); // CBirds::Update()
             ((void (*)()) (g_libGTASA + 0x6E4A7C))(); // CSpecialFX::Update()
             // CRopes::Update();
         }
-       ((void (*)()) (g_libGTASA + 0x6D6E34))(); // CPostEffects::Update() REMOVI FIX MONTIOM BLUE + FPS
+      //  ((void (*)()) (g_libGTASA + 0x6D6E34))(); // CPostEffects::Update() REMOVI FIX MONTIOM BLUE + FPS
         ((void (*)()) (g_libGTASA + 0x502ADC))(); // CTimeCycle::Update() crash without
         // CPopCycle::Update()
 
