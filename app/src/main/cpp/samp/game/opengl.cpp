@@ -527,17 +527,23 @@ void BuildPixelSource(int flags) {
     // --- INJETANDO GRÁFICOS "BONITÃO" (ESTILO GTA V) ---
     
     // 1. Simulação de Brilho 3D no Personagem (Rim Light)
-    strcat((char *)&pxlbuf, "vec3 viewDir = normalize(vec3(0.0, 0.0, 1.0));\n"); 
-    strcat((char *)&pxlbuf, "float rim = 1.0 - max(dot(viewDir, vec3(0.0, 1.0, 0.0)), 0.0);\n");
-    strcat((char *)&pxlbuf, "fcolor.xyz += pow(rim, 3.0) * vec3(0.8, 0.8, 0.8);\n"); 
+    // --- TESTE DE IMPACTO VISUAL ---
+    
+    // 1. Forçar Cores Vibrantes (Saturação Extrema)
+    // Isso vai deixar o vermelho do vestido e o asfalto muito mais fortes
+    strcat((char *)&pxlbuf, "fcolor.xyz *= 1.4;\n"); 
 
-    // 2. Tone Mapping (Evita cores estouradas e dá aspecto profissional)
-    strcat((char *)&pxlbuf, "fcolor.xyz = fcolor.xyz / (fcolor.xyz + vec3(1.0));\n"); 
+    // 2. Brilho de Contorno "Fake" (Rim Light Forçado)
+    // Usamos o próprio canal Alpha e a posição da tela para criar um brilho nas bordas
+    strcat((char *)&pxlbuf, "float fakeRim = 1.0 - fcolor.a;\n");
+    strcat((char *)&pxlbuf, "fcolor.xyz += (fakeRim * vec3(0.5, 0.5, 0.5));\n"); 
 
-    // 3. Gamma Correction (Cores mais vivas e profundas)
-    strcat((char *)&pxlbuf, "fcolor.xyz = pow(fcolor.xyz, vec3(1.0 / 1.5));\n");
+    // 3. Efeito Vignette / Escurecimento de Bordas (Estilo GTA V)
+    // Isso foca a luz no centro do personagem
+    strcat((char *)&pxlbuf, "fcolor.xyz *= (1.0 - length(Out_Tex0 - 0.5) * 0.5);\n");
 
-    // Saída Final da Cor
+    // 4. Gamma de Contraste Alto
+    strcat((char *)&pxlbuf, "fcolor.xyz = pow(fcolor.xyz, vec3(1.2));\n");    // Saída Final da Cor
     snprintf(s, 0x200uLL, "gl_FragColor = fcolor;");
     strcat((char *)&pxlbuf, s);
 
