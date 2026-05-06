@@ -6,8 +6,8 @@
 #include "../settings.h"
 
 //gps line
-#include "../game_sa/CGPSNavigator.h"
-extern CGPSNavigator* pGPSNavigator;
+//#include "../game_sa/CGPSNavigator.h"
+//extern CGPSNavigator* pGPSNavigator;
 
 extern UI* pUI;
 extern CGame *pGame;
@@ -1047,7 +1047,7 @@ void SetCheckpoint(RPCParameters* rpcParams)
 	vecSize.y = fSize;
 	vecSize.z = fSize;
     //gps line
-	pGPSNavigator->SetTarget({ vecPos.x, vecPos.y, vecPos.z });
+	//pGPSNavigator->SetTarget({ vecPos.x, vecPos.y, vecPos.z });
 
 	pGame->SetCheckpointInformation(&vecPos, &vecSize);
 	pGame->m_bCheckpointsEnabled = true;
@@ -1058,7 +1058,7 @@ void DisableCheckpoint(RPCParameters* rpcParams)
 	Log::traceLastFunc("[RPC-IN] Disable checkpoint");
 
 	//gps line
-	pGPSNavigator->Clear();
+//	pGPSNavigator->Clear();
 	
 
 	pGame->m_bCheckpointsEnabled = false;
