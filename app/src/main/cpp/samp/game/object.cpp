@@ -94,18 +94,6 @@ CObject::~CObject()
 
 void CObject::Process(float fElapsedTime)
 {
-	// [Otimização] Se o objeto estiver muito longe, não processe física/movimento +fps
-    if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
-    {
-        CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
-        if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
-        {
-            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
-            float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
-            
-            if (fDist > 80.0f) return; 
-        }
-    }
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
 	{
 		if (pNetGame)
@@ -410,7 +398,7 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 	m_iMaterialTextAlign[index] = textAlignment;
 }
 
-/*void CObject::ProcessMaterialText()
+void CObject::ProcessMaterialText()
 {
 	for (int i = 0; i < 16; i++)
 	{
@@ -424,38 +412,6 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 			m_bHasMaterialText = true;
 		}
 	}
-}*/
-// +fps
-void CObject::ProcessMaterialText()
-{
-    // [Otimização] Usando GetPosition() que você confirmou existir
-    if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
-    {
-        CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
-        if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
-        {
-            // Agora usando o nome correto: GetPosition()
-            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
-            
-            // Passando os 3 argumentos: x, y, z
-            float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
-            
-            if (fDist > 60.0f) return; 
-        }
-    }
-
-    for (int i = 0; i < 16; i++)
-    {
-        if (m_iMaterialType[i] == MATERIAL_TYPE_TEXT && m_MaterialTextTexture[i] == 0)
-        {
-            m_iMaterialFontSize[i] *= 0.75f; 
-            m_MaterialTextTexture[i] = reinterpret_cast<uintptr_t>(pMaterialTextGenerator->Generate(
-                    m_szMaterialText[i], m_iMaterialSize[i], m_iMaterialFontSize[i],
-                    false, m_dwMaterialFontColor[i], m_dwMaterialBackColor[i],
-                    m_iMaterialTextAlign[i]));
-            m_bHasMaterialText = true;
-        }
-    }
 }
 
 // 0.3.7
