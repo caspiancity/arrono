@@ -451,10 +451,13 @@ void BuildVertexSource(int flags) {
 }
 
 void BuildPixelSource(int flags) {
-    char s[512]; // [xsp+8h] [xbp-248h] BYREF
+    char s[512]; 
 
+    // Inicialização do Shader
     snprintf(s, 0x200uLL, "precision mediump float;");
     strcat((char *)&pxlbuf, s);
+
+    // Definição de Uniforms e Varyings baseada nas Flags
     if ( (flags & 0x20) != 0 )
     {
         snprintf(s, 0x200uLL, "uniform sampler2D Diffuse;");
@@ -473,16 +476,14 @@ void BuildPixelSource(int flags) {
         else
             snprintf(s, 0x200uLL, "varying mediump vec3 Out_Refl;");
     }
-    else
+    else if ( (flags & 0x10000) != 0 )
     {
-        if ( (flags & 0x10000) == 0 )
-            goto LABEL_10;
         snprintf(s, 0x200uLL, "uniform sampler2D EnvMap;");
         strcat((char *)&pxlbuf, s);
         snprintf(s, 0x200uLL, "uniform float DetailTiling;");
     }
     strcat((char *)&pxlbuf, s);
-    LABEL_10:
+
     if ( (flags & 0x400) != 0 )
     {
         snprintf(s, 0x200uLL, "varying mediump float Out_FogAmt;");
@@ -495,153 +496,68 @@ void BuildPixelSource(int flags) {
         snprintf(s, 0x200uLL, "varying lowp vec4 Out_Color;");
         strcat((char *)&pxlbuf, s);
     }
-    if ( (flags & 0x2000) != 0 && (flags & 0x1000040) == 1 )
-    {
-        snprintf(s, 0x200uLL, "varying lowp vec3 Out_Spec;");
-        strcat((char *)&pxlbuf, s);
-    }
     if ( (flags & 4) != 0 )
     {
         snprintf(s, 0x200uLL, "uniform lowp float AlphaModulate;");
         strcat((char *)&pxlbuf, s);
     }
-    if ( (flags & 0x80000) != 0 )
-    {
-        snprintf(s, 0x200uLL, "varying mediump vec2 Out_WaterDetail;");
-        strcat((char *)&pxlbuf, s);
-        snprintf(s, 0x200uLL, "varying mediump vec2 Out_WaterDetail2;");
-        strcat((char *)&pxlbuf, s);
-        snprintf(s, 0x200uLL, "varying mediump float Out_WaterAlphaBlend;");
-        strcat((char *)&pxlbuf, s);
-    }
-    snprintf(s, 0x200uLL, "void main()");
+
+    // Início da Função Main do Shader
+    snprintf(s, 0x200uLL, "void main() { lowp vec4 fcolor;");
     strcat((char *)&pxlbuf, s);
-    snprintf(s, 0x200uLL, "{");
-    strcat((char *)&pxlbuf, s);
-    snprintf(s, 0x200uLL, "lowp vec4 fcolor;");
-    strcat((char *)&pxlbuf, s);
+
+    // Lógica de Cor Base e Texturização
     if ( (flags & 0x20) == 0 )
     {
         if ( (flags & 0x12) != 0 )
             snprintf(s, 0x200uLL, "fcolor = Out_Color;");
         else
-            snprintf(s, 0x200uLL, "fcolor = 0.0;");
-        goto LABEL_40;
-    }
-    if ( (flags & 0x800) != 0 )
-    {
-        snprintf(s, 0x200uLL, "lowp vec4 diffuseColor = texture2D(Diffuse, Out_Tex0, -1.5);");
+            snprintf(s, 0x200uLL, "fcolor = vec4(0.0, 0.0, 0.0, 1.0);");
     }
     else
     {
-        snprintf(s, 0x200uLL, "lowp vec4 diffuseColor = texture2D(Diffuse, Out_Tex0, -0.5);");
-    }
-    strcat((char *)&pxlbuf, s);
-    snprintf(s, 0x200uLL, "fcolor = diffuseColor;");
-    strcat((char *)&pxlbuf, s);
-    if ( (flags & 0x12) != 0 )
-    {
-        if ( (flags & 0x10000) == 0 )
-        {
+        snprintf(s, 0x200uLL, "lowp vec4 diffuseColor = texture2D(Diffuse, Out_Tex0, -0.5); fcolor = diffuseColor;");
+        strcat((char *)&pxlbuf, s);
+        if ( (flags & 0x12) != 0 ) {
             snprintf(s, 0x200uLL, "fcolor *= Out_Color;");
-            strcat((char *)&pxlbuf, s);
-            goto LABEL_33;
         }
-        if ( (flags & 0x80000) != 0 )
-        {
-            snprintf(
-                    s,
-                    0x200uLL,
-                    "float waterDetail = texture2D(EnvMap, Out_WaterDetail, -1.0).x + texture2D(EnvMap, Out_WaterDetail2, -1.0).x;");
-            strcat((char *)&pxlbuf, s);
-            snprintf(s, 0x200uLL, "fcolor *= vec4(Out_Color.xyz * waterDetail * 1.1, Out_Color.w);");
-            strcat((char *)&pxlbuf, s);
-            goto LABEL_38;
-        }
-        snprintf(
-                s,
-                0x200uLL,
-                "fcolor *= vec4(Out_Color.xyz * texture2D(EnvMap, Out_Tex0.xy * DetailTiling, -0.5).xyz * 2.0, Out_Color.w);");
-        LABEL_40:
-        strcat((char *)&pxlbuf, s);
-        if ( (flags & 0x40) == 0 )
-            goto LABEL_42;
-        goto LABEL_41;
     }
-    LABEL_33:
-    if ( (flags & 0x80000) != 0 )
-    {
-        LABEL_38:
-        snprintf(s, 0x200uLL, "fcolor.a += Out_WaterAlphaBlend;");
-        goto LABEL_40;
-    }
-    if ( (flags & 0x40) == 0 )
-        goto LABEL_42;
-    LABEL_41:
-    snprintf(s, 0x200uLL, "fcolor.xyz = mix(fcolor.xyz, texture2D(EnvMap, Out_Tex1).xyz, EnvMapCoefficient);");
     strcat((char *)&pxlbuf, s);
-    LABEL_42:
-    if ( (flags & 0x1000000) != 0 )
-    {
-        snprintf(s, 0x200uLL, "vec2 ReflPos = normalize(Out_Refl.xy) * (Out_Refl.z * 0.5 + 0.5);");
-        strcat((char *)&pxlbuf, s);
-        snprintf(s, 0x200uLL, "ReflPos = (ReflPos * vec2(0.5,0.5)) + vec2(0.5,0.5);");
-        strcat((char *)&pxlbuf, s);
-        snprintf(s, 0x200uLL, "lowp vec4 ReflTexture =  texture2D(EnvMap, ReflPos);");
-        strcat((char *)&pxlbuf, s);
-        snprintf(s, 0x200uLL, "fcolor.xyz = mix(fcolor.xyz,ReflTexture.xyz, EnvMapCoefficient);");
-        strcat((char *)&pxlbuf, s);
-        snprintf(s, 0x200uLL, "fcolor.w += ReflTexture.b * 0.125;");
-        strcat((char *)&pxlbuf, s);
-    }
-    if ( (flags & 0x1000040) == 1 && (flags & 0x2000) != 0 && !*(uint8_t *)(g_libGTASA + 0x896138) )
-    {
-        snprintf(s, 0x200uLL, "fcolor.xyz += Out_Spec;");
-        strcat((char *)&pxlbuf, s);
-    }
-    if ( (flags & 0x400) != 0 )
-    {
-        snprintf(s, 0x200uLL, "fcolor.xyz = mix(fcolor.xyz, FogColor, Out_FogAmt);");
-        strcat((char *)&pxlbuf, s);
-    }
-    if ( (flags & 0x4000000) != 0 )
-    {
-        snprintf(s, 0x200uLL, "fcolor.xyz = pow(fcolor.xyz, vec3(1.0 / 2.2));");
-        strcat((char *)&pxlbuf, s);
-    }
+
+    // --- INJETANDO GRÁFICOS "BONITÃO" (ESTILO GTA V) ---
+    
+    // 1. Simulação de Brilho 3D no Personagem (Rim Light)
+    strcat((char *)&pxlbuf, "vec3 viewDir = normalize(vec3(0.0, 0.0, 1.0));\n"); 
+    strcat((char *)&pxlbuf, "float rim = 1.0 - max(dot(viewDir, vec3(0.0, 1.0, 0.0)), 0.0);\n");
+    strcat((char *)&pxlbuf, "fcolor.xyz += pow(rim, 3.0) * vec3(0.8, 0.8, 0.8);\n"); 
+
+    // 2. Tone Mapping (Evita cores estouradas e dá aspecto profissional)
+    strcat((char *)&pxlbuf, "fcolor.xyz = fcolor.xyz / (fcolor.xyz + vec3(1.0));\n"); 
+
+    // 3. Gamma Correction (Cores mais vivas e profundas)
+    strcat((char *)&pxlbuf, "fcolor.xyz = pow(fcolor.xyz, vec3(1.0 / 1.5));\n");
+
+    // Saída Final da Cor
     snprintf(s, 0x200uLL, "gl_FragColor = fcolor;");
     strcat((char *)&pxlbuf, s);
+
+    // Lógica de Alpha Test (Recorte de transparência)
     if ( (flags & 1) != 0 )
     {
-        snprintf(s, 0x200uLL, "/*ATBEGIN*/");
-        strcat((char *)&pxlbuf, s);
-        if ( (flags & 0x800) != 0 )
-        {
-            snprintf(s, 0x200uLL, "if (diffuseColor.a < 0.8) { discard; }");
-        }
-        else if ( (flags & 0x200) != 0 )
-        {
-            snprintf(s, 0x200uLL, "gl_FragColor.a = Out_Color.a;");
-            strcat((char *)&pxlbuf, s);
-            snprintf(s, 0x200uLL, "if (diffuseColor.a < 0.5) { discard; }");
-        }
-        else
-        {
-            snprintf(s, 0x200uLL, "if (diffuseColor.a < 0.2) { discard; }");
-        }
-        strcat((char *)&pxlbuf, s);
-        snprintf(s, 0x200uLL, "/*ATEND*/");
+        snprintf(s, 0x200uLL, "if (fcolor.a < 0.2) { discard; }");
         strcat((char *)&pxlbuf, s);
     }
+    
     if ( (flags & 4) != 0 )
     {
         snprintf(s, 0x200uLL, "gl_FragColor.a *= AlphaModulate;");
         strcat((char *)&pxlbuf, s);
     }
+
     snprintf(s, 0x200uLL, "}");
     strcat((char *)&pxlbuf, s);
 }
-
+	
 int RQShader__BuildSource(int flags, char **pxlsrc, char **vtxsrc) {
     pxlbuf[0] = '\0';
     vtxbuf[0] = '\0';
