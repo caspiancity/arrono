@@ -699,18 +699,36 @@ bool CGame::InitialiseRenderWare() {
     Scene.m_pRwCamera = camera;
     TheCamera.Init();
     TheCamera.SetRwCamera(Scene.m_pRwCamera);
-    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 800.0f);
+    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 400.0f);
     RwCameraSetNearClipPlane(Scene.m_pRwCamera, 0.9f);
    // CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
 	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
     //CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 1.2f);
 	//CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
-	if (Scene.m_pRwCamera) {
+	/*if (Scene.m_pRwCamera) {
     // Pegue o aspecto real da tela para não bugar a GUI
     float screenAspect = (float)RsGlobal->maximumWidth / (float)RsGlobal->maximumHeight;
     
     // 0.5f a 0.7f é o padrão. Se colocar muito alto, pesa na GPU.
     CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, screenAspect);
+	}*/
+	if (Scene.m_pRwCamera) {
+    // 1. Pegamos a resolução nativa
+    float width = (float)RsGlobal->maximumWidth;
+    float height = (float)RsGlobal->maximumHeight;
+
+    // 2. Definimos um fator de esticamento (Stretched)
+    // 4:3 (1.333f) ou 16:10 (1.6f) são os mais usados.
+    // Quanto menor o valor abaixo, mais esticada a tela fica.
+    float stretchedAspect = 1.333333f; 
+
+    // 3. CameraSize com FOV (Field of View) ajustado
+    // Use 0.4f como você queria para focar no desempenho (ganha muito FPS)
+    CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, stretchedAspect);
+
+    // 4. Correção de FOV para não parecer que está "dentro" do personagem
+    // Isso compensa a visão lateral que você perde ao esticar
+    //SetFOV(70.0f); // Ajuste conforme seu gosto
 	}
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
