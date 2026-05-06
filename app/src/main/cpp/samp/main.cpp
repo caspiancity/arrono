@@ -1,4 +1,4 @@
-﻿#include <jni.h>
+#include <jni.h>
 #include <pthread.h>
 #include <syscall.h>
 
@@ -21,9 +21,6 @@
 #include "settings.h"
 
 #include "crashlytics.h"
-// gps line
-#include "game_sa/CGPSNavigator.h"
-CGPSNavigator*      pGPSNavigator = nullptr;
 
 /*
 Peerapol Unarak
@@ -216,7 +213,6 @@ void DoInitStuff()
 		pSnapShotHelper = new CSnapShotHelper();
 		pMaterialTextGenerator = new MaterialTextGenerator();
 		pAudioStream = new CAudioStream();
-		pGPSNavigator = new CGPSNavigator(); //gps line
 		pAudioStream->Initialize();
 
 		pUI->splashscreen()->setVisible(false);
