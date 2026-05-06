@@ -94,6 +94,19 @@ CObject::~CObject()
 
 void CObject::Process(float fElapsedTime)
 {
+	if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
+    {
+        CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
+        if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
+        {
+            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
+            float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
+            
+            // Se o objeto estiver a mais de 250m, aí sim a gente pode ignorar.
+            // Menos que isso, o chão corre risco de sumir.
+            if (fDist > 250.0f) return; 
+        }
+	}
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
 	{
 		if (pNetGame)
@@ -400,6 +413,19 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 
 void CObject::ProcessMaterialText()
 {
+	if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
+    {
+        CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
+        if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
+        {
+            // Usando GetPosition() que confirmamos ser o correto
+            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
+            float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
+            
+            // Se o texto estiver a mais de 60m, não gasta CPU/GPU gerando a textura
+            if (fDist > 60.0f) return; 
+        }
+	}
 	for (int i = 0; i < 16; i++)
 	{
 		if (m_iMaterialType[i] == MATERIAL_TYPE_TEXT && m_MaterialTextTexture[i] == 0)
