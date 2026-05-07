@@ -48,7 +48,7 @@
 			android:layout_marginTop="8dp"
 			android:indeterminate="false"
 			style="?android:progressBarStyleHorizontal"
-			android:progressDrawable="@drawable/loadscreen/progress_style" />
+			android:progressDrawable="@drawable/progress_style" />
 	</LinearLayout>
 	<TextView
 		android:id="@+id/txtVersion"
