@@ -100,6 +100,29 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
+        <activity
+			android:name=".client.BaseActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+			android:hardwareAccelerated="true
+			android:supportsPictureInPicture="true"
+			android:theme="@style/FullScreen"
+			android:screenOrientation="landscape"
+			android:windowSoftInputMode="stateHidden"
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity> 
+      <activity
+			android:name=".client.ConfigActivity"
+			android:configChanges="orientation|screenSize|keyboardHidden|smallestScreenSize|screenLayout"
+			android:hardwareAccelerated="true
+			android:supportsPictureInPicture="true"
+			android:theme="@style/FullScreen"
+			android:screenOrientation="landscape"
+			android:windowSoftInputMode="stateHidden">
+        </activity>   
+
         <service android:name=".launcher.UpdateService" android:enabled="true" android:exported="false"/>
 
         <service
