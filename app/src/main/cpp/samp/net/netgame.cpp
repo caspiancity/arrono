@@ -586,7 +586,7 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *pkt)
 	bsSuccAuth.Read(uiChallenge);
 	uiChallenge ^= iVersion;
 
-	if (pUI) pUI->chat()->addDebugMessage("Connected. Joining the game...");
+	if (pUI) pUI->chat()->addDebugMessage("Conexão Estabelecida!");
 
 	SetGameState(GAMESTATE_AWAIT_JOIN);
 
