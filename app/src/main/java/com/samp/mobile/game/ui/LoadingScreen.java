@@ -6,28 +6,30 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import com.samp.mobile.R;
 //import com.samp.mobile.MainActivity;
 
 public class LoadingScreen {
 
     private Activity activity;
-    private ConstraintLayout mainLayout;
+    private View mainLayout; // Mudado para View para aceitar qualquer layout (Relative/Constraint)
     private VideoView video;
-    private boolean isRunning = true; // Controle para parar a thread
+    private boolean isRunning = true;
 
     public LoadingScreen(Activity activity) {
         this.activity = activity;
 
-        // Infla o layout e adiciona à tela
-        mainLayout = (ConstraintLayout) activity.getLayoutInflater().inflate(R.layout.loadingscreen, null);
-        activity.addContentView(mainLayout, new ConstraintLayout.LayoutParams(-1, -1));
+        // Infla o layout usando View genérica para evitar o erro de Cast da print
+        mainLayout = activity.getLayoutInflater().inflate(R.layout.loadingscreen, null);
+        
+        // Adiciona à tela usando LayoutParams genéricos
+        activity.addContentView(mainLayout, new ViewGroup.LayoutParams(-1, -1));
 
-        // Referências corrigidas (usando mainLayout.findViewById)
+        // Busca os componentes dentro do mainLayout
         video = mainLayout.findViewById(R.id.videoBackground);
         final ProgressBar pg = mainLayout.findViewById(R.id.progressLoading);
         final TextView status = mainLayout.findViewById(R.id.txtStatus);
@@ -46,12 +48,11 @@ public class LoadingScreen {
             "loading_map_icons", "clearing_temp_cache", "starting_game_instance"
         };
 
-        // Esconder barras (Sistema)
+        // Força modo Fullscreen/Imersivo
         activity.getWindow().getDecorView().setSystemUiVisibility(
             View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN
         );
 
-        // Caminho do vídeo
         String path = "android.resource://" + activity.getPackageName() + "/" + R.raw.loading_video;
         video.setVideoPath(path);
         
@@ -68,17 +69,18 @@ public class LoadingScreen {
             return false;
         });
 
-        // Thread de carregamento
+        // Loop de carregamento
         new Thread(() -> {
             for (int i = 0; i <= 100 && isRunning; i++) {
                 final int p = i;
                 activity.runOnUiThread(() -> {
-                    if (!isRunning) return;
+                    if (!isRunning || mainLayout == null) return;
                     
                     pg.setProgress(p);
                     int logIndex = (int) (p * (logs.length - 1) / 100);
                     files.setText("loading: " + logs[logIndex]);
 
+                    // Textos em Português como pedido
                     if (p < 20) status.setText("INICIANDO NÚCLEO...");
                     else if (p < 40) status.setText("CARREGANDO RESOURCES...");
                     else if (p < 60) status.setText("CARREGANDO TEXTURAS...");
@@ -86,20 +88,28 @@ public class LoadingScreen {
                     else if (p < 95) status.setText("CARREGANDO ÁUDIOS...");
                     else status.setText("CONECTANDO!");
 
-                    if (p == 1200) {
-                        new Handler().postDelayed(this::hide, 300);
+                    if (p == 100) {
+                        new Handler().postDelayed(this::hide, 500);
                     }
                 });
-                try { Thread.sleep(1200); } catch (InterruptedException e) { e.printStackTrace(); }
+                try { Thread.sleep(150); } catch (InterruptedException e) { e.printStackTrace(); }
             }
         }).start();
     }
 
+    // O método hide que a lib chama
     public void hide() {
-        isRunning = false; // Para a contagem da Thread
-        if (video != null) {
-            video.stopPlayback(); // Mata o vídeo e o áudio imediatamente
-        }
-        mainLayout.setVisibility(View.GONE); // GONE é melhor que INVISIBLE pra liberar a tela
+        isRunning = false; 
+        activity.runOnUiThread(() -> {
+            if (video != null) {
+                video.stopPlayback(); // Para o vídeo e o som imediatamente
+            }
+            if (mainLayout != null) {
+                mainLayout.setVisibility(View.GONE); // Remove da tela
+                // Remove fisicamente a view para liberar memória
+                ((ViewGroup) mainLayout.getParent()).removeView(mainLayout);
+                mainLayout = null;
+            }
+        });
     }
 }
