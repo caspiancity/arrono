@@ -11,7 +11,7 @@ import android.widget.TextView;
 import android.widget.VideoView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import com.samp.mobile.R;
-import com.samp.mobile.MainActivity;
+//import com.samp.mobile.MainActivity;
 
 public class LoadingScreen {
 
