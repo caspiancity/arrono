@@ -1,0 +1,130 @@
+<LinearLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#050505"
+	android:orientation="vertical"
+	android:padding="25dp">
+	<TextView
+		android:id="@+id/textview42"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:text="CONFIGURAÇÕES"
+		android:textSize="24sp"
+		android:textStyle="bold"
+		android:textColor="#00E5FF"
+		android:shadowColor="#00E5FF"
+		android:shadowRadius="10" />
+	<TextView
+		android:id="@+id/textview43"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="30dp"
+		android:text="Ajuste sua experiência no Aura RP"
+		android:textSize="12sp"
+		android:textColor="#FFFFFF" />
+	<LinearLayout
+		android:id="@+id/linear67"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="20dp"
+		android:padding="20dp"
+		android:background="@drawable/bg_vidro_neon"
+		android:orientation="vertical">
+		<TextView
+			android:id="@+id/textview44"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="NICKNAME DO JOGADOR"
+			android:textSize="14sp"
+			android:textStyle="bold"
+			android:textColor="#FFFFFF" />
+		<TextView
+			android:id="@+id/textview45"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="10dp"
+			android:text="Use o formato: Nome_Sobrenome"
+			android:textSize="10sp"
+			android:textColor="#FFFFFF" />
+		<EditText
+			android:id="@+id/editNickname"
+			android:layout_width="match_parent"
+			android:layout_height="50dp"
+			android:paddingLeft="15dp"
+			android:background="#FFFFFF"
+			android:textSize="16sp"
+			android:textColor="#FFFFFF"
+			android:hint="Ex: CJ_Johnson"
+			android:textColorHint="#FFFFFF"
+			android:singleLine="true" />
+	</LinearLayout>
+	<LinearLayout
+		android:id="@+id/linear68"
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:padding="20dp"
+		android:background="@drawable/bg_vidro_neon"
+		android:orientation="vertical">
+		<TextView
+			android:id="@+id/textview46"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="15dp"
+			android:text="LIMITE DE QUADROS (FPS)"
+			android:textSize="14sp"
+			android:textStyle="bold"
+			android:textColor="#FFFFFF" />
+		<LinearLayout
+			android:id="@+id/linear69"
+			android:layout_width="match_parent"
+			android:layout_height="60dp"
+			android:orientation="horizontal">
+			<Button
+				android:id="@+id/btnFps30"
+				android:layout_width="1dp"
+				android:layout_height="match_parent"
+				android:layout_marginRight="5dp"
+				android:background="#FFFFFF"
+				android:text="30 FPS"
+				android:textSize="12sp"
+				android:textColor="#FFFFFF"
+				android:layout_weight="1" />
+			<Button
+				android:id="@+id/btnFps60"
+				android:layout_width="1dp"
+				android:layout_height="match_parent"
+				android:layout_marginRight="5dp"
+				android:background="#FFFFFF"
+				android:text="60 FPS"
+				android:textSize="12sp"
+				android:textColor="#FFFFFF"
+				android:layout_weight="1" />
+			<Button
+				android:id="@+id/btnFps120"
+				android:layout_width="1dp"
+				android:layout_height="match_parent"
+				android:background="#FFFFFF"
+				android:text="120 FPS"
+				android:textSize="12sp"
+				android:textColor="#FFFFFF"
+				android:layout_weight="1" />
+		</LinearLayout>
+	</LinearLayout>
+	<View
+		android:id="@+id/view70"
+		android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:layout_weight="1" />
+	<Button
+		android:id="@+id/btnSalvar"
+		android:layout_width="match_parent"
+		android:layout_height="55dp"
+		android:background="@drawable/btn_cyan_glow"
+		android:text="SALVAR ALTERAÇÕES"
+		android:textSize="12sp"
+		android:textStyle="bold"
+		android:textColor="#FFFFFF" />
+</LinearLayout>
