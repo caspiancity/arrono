@@ -1,4 +1,4 @@
-package com.my.newproject18;
+package com.samp.mobile.client; // PACOTE CORRIGIDO
 
 import android.app.Activity;
 import android.content.Intent;
@@ -9,11 +9,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import com.samp.mobile.R; // Certifique-se que o package do R está correto
+import com.samp.mobile.R;
 
 public class ConfigActivity extends Activity {
 	
-    // Definimos os componentes como variáveis da classe
     private EditText editNick;
     private Button btn30, btn60, btn120, btnSalvar;
     private SharedPreferences settings;
@@ -22,16 +21,13 @@ public class ConfigActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle _savedInstanceState) {
 		super.onCreate(_savedInstanceState);
-		
-        // 1. Inflar o layout manualmente (Sem Binding)
-		setContentView(R.layout.config); // Verifique se o nome do XML é settings
+		setContentView(R.layout.config); // Verifique se o XML é config.xml
 
 		initialize(_savedInstanceState);
 		initializeLogic();
 	}
 	
 	private void initialize(Bundle _savedInstanceState) {
-        // 2. Vincular os IDs
         editNick = findViewById(R.id.editNickname);
         btn30 = findViewById(R.id.btnFps30);
         btn60 = findViewById(R.id.btnFps60);
@@ -43,27 +39,20 @@ public class ConfigActivity extends Activity {
 	}
 	
 	private void initializeLogic() {
-		// Carregar dados salvos
 		String nickSalvo = settings.getString("nick", "Novo_Jogador");
 		editNick.setText(nickSalvo);
-        
-        // Estilo inicial do EditText
 		editNick.setBackgroundColor(Color.parseColor("#1AFFFFFF"));
 		
-        // Reset visual inicial dos botões
 		btn30.setBackgroundColor(Color.parseColor("#1AFFFFFF"));
 		btn60.setBackgroundColor(Color.parseColor("#1AFFFFFF"));
 		btn120.setBackgroundColor(Color.parseColor("#1AFFFFFF"));
 
-        // Marcar o botão que já estava salvo (exemplo para o de 60 FPS)
         int fpsSalvo = settings.getInt("fps", 60);
         if (fpsSalvo == 30) destacaBotao(btn30);
         else if (fpsSalvo == 60) destacaBotao(btn60);
         else if (fpsSalvo == 120) destacaBotao(btn120);
 		
-		// Função de clique dos FPS
 		View.OnClickListener fpsListener = v -> {
-			// Reseta todos
 			btn30.setBackgroundColor(Color.parseColor("#1AFFFFFF"));
 			btn30.setTextColor(Color.WHITE);
 			btn60.setBackgroundColor(Color.parseColor("#1AFFFFFF"));
@@ -71,10 +60,8 @@ public class ConfigActivity extends Activity {
 			btn120.setBackgroundColor(Color.parseColor("#1AFFFFFF"));
 			btn120.setTextColor(Color.WHITE);
 			
-			// Destaca o selecionado
             destacaBotao((Button)v);
 			
-			// Guarda o valor
 			if(v.getId() == R.id.btnFps30) editor.putInt("fps", 30);
 			else if(v.getId() == R.id.btnFps60) editor.putInt("fps", 60);
 			else if(v.getId() == R.id.btnFps120) editor.putInt("fps", 120);
@@ -86,7 +73,6 @@ public class ConfigActivity extends Activity {
 		btn60.setOnClickListener(fpsListener);
 		btn120.setOnClickListener(fpsListener);
 		
-		// Ação de Salvar
 		btnSalvar.setOnClickListener(v -> {
 			String nick = editNick.getText().toString();
 			
@@ -95,8 +81,8 @@ public class ConfigActivity extends Activity {
 				editor.apply();
 				Toast.makeText(this, "Configurações Aplicadas!", Toast.LENGTH_SHORT).show();
                 
-                // Volta para a MainActivity
-				Intent it = new Intent(getApplicationContext(), MainActivity.class);
+                // VOLTA PARA A BASE ACTIVITY (PRINCIPAL)
+				Intent it = new Intent(ConfigActivity.this, BaseActivity.class);
 				startActivity(it);
 				finish();
 			} else {
@@ -105,7 +91,6 @@ public class ConfigActivity extends Activity {
 		});
 	}
 
-    // Helper para não repetir código de estilo
     private void destacaBotao(Button b) {
         b.setBackgroundResource(R.drawable.fps_btn_selected);
         b.setTextColor(Color.BLACK);
