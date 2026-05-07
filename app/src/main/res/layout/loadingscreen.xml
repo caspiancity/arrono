@@ -1,28 +1,64 @@
-<?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#000000">
-
-    <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="@dimen/_120sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/logo" />
-
-    <ProgressBar
-        android:id="@+id/progressBar2"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="@dimen/_250sdp"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView3" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+<RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:background="#000000">
+	<VideoView
+		android:id="@+id/videoBackground"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent" />
+	<LinearLayout
+		android:id="@+id/linear62"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginRight="40dp"
+		android:layout_marginBottom="40dp"
+		android:orientation="vertical"
+		android:translationX="14.0dp"
+		android:translationY="-33.0dp"
+		android:gravity="end"
+		android:layout_alignParentEnd="true"
+		android:layout_alignParentBottom="true">
+		<TextView
+			android:id="@+id/txtFiles"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginBottom="3dp"
+			android:text="initialized_nexus_core.dll"
+			android:textSize="10sp"
+			android:textColor="#FFFFFF"
+			android:shadowColor="#000000"
+			android:shadowRadius="8" />
+		<TextView
+			android:id="@+id/txtStatus"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="CONNECTING..."
+			android:textSize="14sp"
+			android:textStyle="bold"
+			android:textColor="#00E5FF"
+			android:shadowColor="#000000"
+			android:shadowRadius="15" />
+		<ProgressBar
+			android:id="@+id/progressLoading"
+			android:layout_width="320dp"
+			android:layout_height="5dp"
+			android:layout_marginTop="8dp"
+			android:indeterminate="false"
+			style="?android:progressBarStyleHorizontal"
+			android:progressDrawable="@drawable/loadscreen/progress_style" />
+	</LinearLayout>
+	<TextView
+		android:id="@+id/txtVersion"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginBottom="1dp"
+		android:background="#212121"
+		android:text="Nexus Client v1.33.7 (Beta)"
+		android:textSize="9sp"
+		android:textColor="#FFFFFF"
+		android:translationX="9.0dp"
+		android:translationY="10.0dp" />
+</RelativeLayout>
