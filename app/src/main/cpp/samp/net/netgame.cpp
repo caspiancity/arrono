@@ -96,7 +96,7 @@ CNetGame::CNetGame(const char* szHostOrIp, int iPort, const char *szPlayerName, 
 	SetGameState(GAMESTATE_WAIT_CONNECT);
 	m_bLanMode = false;
 
-    pJavaWrapper->HideLoadingScreen();
+    //pJavaWrapper->HideLoadingScreen();
 
     const char* sampVer = SAMP_VERSION;
     if(pSettings)
@@ -619,6 +619,7 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *pkt)
 	// voice
 	SpeakerList::Hide();
 	MicroIcon::Hide();
+	pJavaWrapper->HideLoadingScreen();
 }
 // 0.3.7
 void CNetGame::Packet_FailedInitializeEncription(Packet *pkt)
