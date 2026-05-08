@@ -17,6 +17,7 @@ public:
     ~CJavaWrapper() {};
     
     const char* GetClipboardString();
+    void UpdateHudData(int ping, const char* time, int cpu, int fps);
     void SetPauseState(bool pause);
     void ShowLoadingScreen();
     void HideLoadingScreen();
@@ -57,4 +58,5 @@ public:
 	jmethodID s_exitGame;
 	jmethodID s_showEditObject;
 	jmethodID s_hideEditObject;
+	jmethodID s_updateHudData;
 };
