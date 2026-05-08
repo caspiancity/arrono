@@ -249,7 +249,8 @@ void UI::renderDebug()
         }
         snprintf(&szStr[0], sizeof(szStr), "FPS: %.0f", fps);
         if(pJavaWrapper) {
-        pJavaWrapper->UpdateHudData(ping, time, cpu, (int)fps);
+            // Adicionei a vírgula entre o ID (2) e o Tempo (12:20)
+            pJavaWrapper->UpdateHudData("2", "12:20", "55", (int)fps);
         }
 
         label->setText(&szStr[0]);
