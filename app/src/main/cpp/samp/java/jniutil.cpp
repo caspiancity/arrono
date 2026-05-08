@@ -32,8 +32,29 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
 
     s_showEditObject = env->GetMethodID(clas, "showEditObject", "()V");
     s_hideEditObject = env->GetMethodID(clas, "hideEditObject", "()V");
+    
+    s_updateHudData = env->GetMethodID(clas, "updateHudData", "(ILjava/lang/String;II)V");
 
     env->DeleteLocalRef(clas);
+}
+
+void CJavaWrapper::UpdateHudData(int ping, const char* time, int cpu, int fps)
+{
+    JNIEnv* env;
+    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
+
+    if (!env) return;
+
+    // Converte o char* do C++ para jstring do Java
+    jstring jTime = env->NewStringUTF(time);
+
+    // Chama o método Java passando os 4 parâmetros
+    env->CallVoidMethod(activity, s_updateHudData, ping, jTime, cpu, fps);
+
+    // Limpa a referência local da string para não vazar memória
+    env->DeleteLocalRef(jTime);
+
+    EXCEPTION_CHECK(env);
 }
 
 void CJavaWrapper::ShowKeyboard()
