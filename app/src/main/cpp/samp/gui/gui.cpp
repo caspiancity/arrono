@@ -16,6 +16,8 @@
 #include "game/Streaming.h"
 #include "game/Pools.h"
 
+#include "../java/jniutil.h"
+
 //gps line
 //#include "../game_sa/CGPSNavigator.h"
 //extern CGPSNavigator* pGPSNavigator;
@@ -23,6 +25,8 @@
 extern CNetGame* pNetGame;
 extern CPlayerTags* pPlayerTags;
 extern UI* pUI;
+
+extern CJavaWrapper *pJavaWrapper;
 
 UI::UI(const ImVec2& display_size, const std::string& font_path)
 	: Widget(), ImGuiWrapper(display_size, font_path)
@@ -244,52 +248,12 @@ void UI::renderDebug()
             fps = std::clamp(CTimer::game_FPS, 10.f, (float) 120);
         }
         snprintf(&szStr[0], sizeof(szStr), "FPS: %.0f", fps);
+        if(pJavaWrapper) {
+        pJavaWrapper->UpdateHudData(ping, time, cpu, (int)fps);
+        }
 
         label->setText(&szStr[0]);
         label->setPosition(pos);
-
-        /*auto &msUsed = CStreaming::ms_memoryUsed;
-        auto &msAvailable = CStreaming::ms_memoryAvailable;
-
-        struct mallinfo memInfo = mallinfo();
-        int totalAllocatedMB  = memInfo.uordblks / (1024 * 1024);
-
-        snprintf(&szStrMem[0], sizeof(szStrMem), "MEM: %d mb (stream %d/%d) (Tex %d MB)",
-                 totalAllocatedMB,
-                 msUsed / (1024 * 1024),
-                 msAvailable / (1024 * 1024),
-                 TextureDatabaseRuntime::storedTexels / (1024 * 1024)
-        );
-
-        pos = ImVec2(pUI->ScaleX(40.0f), pUI->ScaleY(1080.0f - UISettings::fontSize() * 9));
-
-        label2->setText(&szStrMem[0]);
-        label2->setPosition(pos);
-
-        if (pGame->FindPlayerPed()->m_pPed)
-        {
-            snprintf(&szStrPos[0], sizeof(szStrPos), "POS: %.2f, %.2f, %.2f", pGame->FindPlayerPed()->m_pPed->m_matrix->m_pos.x, pGame->FindPlayerPed()->m_pPed->m_matrix->m_pos.y, pGame->FindPlayerPed()->m_pPed->m_matrix->m_pos.z);
-            pos = ImVec2(pUI->ScaleX(40.0f), pUI->ScaleY(1080.0f - UISettings::fontSize() * 8));
-            label3->setText(&szStrPos[0]);
-            label3->setPosition(pos);
-        }
-        //Log("pools = %d mem = %d", GetPedPoolGta()->GetNoOfUsedSpaces(), totalAllocatedMB);
-        char debugPools[250];
-        snprintf(&debugPools[0], sizeof(debugPools), "NSingle: %d; NDouble: %d; Peds: %d; Veh's: %d; Obj: %d; EntryInf: %d; Dummies: %d, Buildings: %d",
-                 GetPtrNodeSingleLinkPool()->GetNoOfUsedSpaces(),
-                 GetPtrNodeDoubleLinkPool()->GetNoOfUsedSpaces(),
-                 GetPedPoolGta()->GetNoOfUsedSpaces(),
-                 GetVehiclePoolGta()->GetNoOfUsedSpaces(),
-                 GetObjectPoolGta()->GetNoOfUsedSpaces(),
-                 GetEntryInfoNodePool()->GetNoOfUsedSpaces(),
-                 GetDummyPool()->GetNoOfUsedSpaces(),
-                 GetBuildingPool()->GetNoOfUsedSpaces()
-                 );
-
-        pos = ImVec2(pUI->ScaleX(40.0f), pUI->ScaleY(1080.0f - UISettings::fontSize() * 1));
-
-        label4->setText(&debugPools[0]);
-        label4->setPosition(pos);*/
 }
 
 void UI::PushToBufferedQueueTextDrawPressed(uint16_t textdrawId)
