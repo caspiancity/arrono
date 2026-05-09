@@ -803,12 +803,12 @@ void CGame::Process() {
                 pUI->buttonpanel()->m_bH->setCaption("H");
         }
 
-        /**CObjectPool* pObjectPool = pNetGame->GetObjectPool();
+        CObjectPool* pObjectPool = pNetGame->GetObjectPool();
         if (pObjectPool) {
             pObjectPool->Process();
      pObjectPool->ProcessMaterialText();
-        }*/
-        CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
+        }
+       /* CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
         if (pObjectPool) {
             // Otimização: Só processa objetos se não estiver em pausa
             if (!CTimer::m_CodePause) {
@@ -820,7 +820,7 @@ void CGame::Process() {
                 pObjectPool->ProcessMaterialText();
                 matTick = 0;
             }
-        }
+        }*/
 
         CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
         if (pTextDrawPool) {
@@ -921,11 +921,11 @@ if (pGame && pStreaming) {
 
         // FIXME: add if
        // ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
-        static int popTick = 0;         //fix +fps diminuir a frequência de atualização de NPC
+      /*  static int popTick = 0;         //fix +fps diminuir a frequência de atualização de NPC
         if(popTick++ >= 3) {
             ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); 
             popTick = 0;
-        }
+        }*/
         
         ((void (*)()) (g_libGTASA + 0x700AF4))(); // CWeapon::UpdateWeapons()
 //		if ( !CCutsceneMgr::ms_running )
