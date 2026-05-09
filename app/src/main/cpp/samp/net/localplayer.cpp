@@ -947,7 +947,7 @@ void CLocalPlayer::SendPassengerFullSyncData()
 	if(m_bPassengerDriveByMode)	SendAimSyncData();
 }
 // 0.3.7
-void CLocalPlayer::SendAimSyncData()
+/*void CLocalPlayer::SendAimSyncData()
 {
 	AIM_SYNC_DATA aimSync;
 
@@ -963,6 +963,41 @@ void CLocalPlayer::SendAimSyncData()
 	aimSync.fAimZ = m_pPlayerPed->GetAimZ();
 	aimSync.aspect_ratio = GameGetAspectRatio() * 255.0;
 	aimSync.byteCamExtZoom = static_cast<unsigned char>(m_pPlayerPed->GetCameraExtendedZoom() * 63.0f) & 63;
+
+    CWeapon* pwstWeapon = m_pPlayerPed->GetCurrentWeaponSlot();
+	if (pwstWeapon->dwState == 2)
+		aimSync.byteWeaponState = WEAPONSTATE_RELOADING;
+	else
+		aimSync.byteWeaponState = (pwstWeapon->dwAmmoInClip > 1) ? WEAPONSTATE_FIRING : pwstWeapon->dwAmmoInClip;
+
+	if ((GetTickCount() - m_dwLastSendSyncTick) > 500 || memcmp(&m_aimSync, &aimSync, sizeof(AIM_SYNC_DATA)))
+	{
+		m_dwLastSendSyncTick = GetTickCount();
+		RakNet::BitStream bsAimSync;
+		bsAimSync.Write((char)ID_AIM_SYNC);
+		bsAimSync.Write((char*)&aimSync, sizeof(AIM_SYNC_DATA));
+		pNetGame->GetRakClient()->Send(&bsAimSync, HIGH_PRIORITY, UNRELIABLE_SEQUENCED, 1);
+		memcpy(&m_aimSync, &aimSync, sizeof(AIM_SYNC_DATA));
+	}
+}*/
+void CLocalPlayer::SendAimSyncData()
+{
+	AIM_SYNC_DATA aimSync;
+
+	CAMERA_AIM* caAim = m_pPlayerPed->GetCurrentAim();
+
+	aimSync.byteCamMode = m_pPlayerPed->GetCameraMode();
+	aimSync.vecAimf.x = caAim->f1x;
+	aimSync.vecAimf.y = caAim->f1y;
+	aimSync.vecAimf.z = caAim->f1z;
+	aimSync.vecAimPos.x = caAim->pos1x;
+	aimSync.vecAimPos.y = caAim->pos1y;
+	aimSync.vecAimPos.z = caAim->pos1z;
+	aimSync.fAimZ = m_pPlayerPed->GetAimZ();
+	aimSync.aspect_ratio = GameGetAspectRatio() * 255.0;
+	//aimSync.byteCamExtZoom = static_cast<unsigned char>(m_pPlayerPed->GetCameraExtendedZoom() * 63.0f) & 63;
+    // Em vez de calcular o zoom real, forçamos o valor neutro (sem zoom)
+    aimSync.byteCamExtZoom = 0;
 
     CWeapon* pwstWeapon = m_pPlayerPed->GetCurrentWeaponSlot();
 	if (pwstWeapon->dwState == 2)
