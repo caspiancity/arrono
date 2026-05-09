@@ -844,7 +844,7 @@ void CGame::Process() {
     //CStreaming::Update();
     //fix mas fps
     // No game.cpp
-static int streamingTick = 0;
+/**static int streamingTick = 0;
 auto pStreaming = pGame->GetStreaming();
 
 if (pGame && pStreaming) {
@@ -861,7 +861,7 @@ if (pGame && pStreaming) {
             streamingTick = 0;
         }
     }
-}
+}*//
     
 
     v2 = CTimer::GetCurrentTimeInCycles();
