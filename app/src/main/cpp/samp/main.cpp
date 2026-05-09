@@ -333,28 +333,30 @@ void MainLoop()
 }*/
 void InitGui()
 {
-    // new voice
     Plugin::OnPluginLoad();
     Plugin::OnSampLoad();
 
     std::string font_path = string_format("%sfonts/%s", g_pszStorage, FONT_NAME);
 
-    // PEGA A RESOLUÇÃO REAL DO SISTEMA
+    // Tente pegar de Scene.m_pRwCamera se RsGlobal falhar
     float screenW = (float)RsGlobal->maximumWidth;
     float screenH = (float)RsGlobal->maximumHeight;
 
-    // SE VIER ZERADO OU MUITO PEQUENO, FORÇAMOS A ESCALA DO ANDROID
-    if(screenW <= 300.0f) screenW = 1280.0f; 
-    if(screenH <= 300.0f) screenH = 720.0f;
+    // Se o Log acusou 640x480, vamos forçar a detecção manual:
+    if(screenW == 640.0f && screenH == 480.0f) 
+    {
+        // Aqui você pode tentar pegar de outra variável global da sua base
+        // Ou, como teste para destravar agora, use valores fixos de uma tela HD:
+        screenW = 1280.0f; 
+        screenH = 720.0f;
+        FLog("Resolução 640x480 detectada e REJEITADA. Forçando 1280x720.");
+    }
 
-    // CRIA A UI COM O TAMANHO CORRETO
     pUI = new UI(ImVec2(screenW, screenH), font_path.c_str());
-    
-    // IMPORTANTE: Recalcular o layout após criar
     pUI->initialize();
     pUI->performLayout();
-    
-    FLog("GUI Destravada: %.0f x %.0f", screenW, screenH);
+
+    FLog("GUI Destravada Real: %.0f x %.0f", screenW, screenH);
 }
 
 #include "game/multitouch.h"
