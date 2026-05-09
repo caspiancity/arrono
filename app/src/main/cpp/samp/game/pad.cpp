@@ -55,6 +55,14 @@ uint16_t CPad__GetPedWalkUpDown_hook(uintptr_t thiz)
 	{
 		// Local player
 		LocalPlayerKeys.wKeyUD = CPad__GetPedWalkUpDown(thiz);
+		
+		// Se o valor for diferente de 0, significa que você está movendo o analógico
+		if(LocalPlayerKeys.wKeyUD != 0) {
+			LocalPlayerKeys.bKeys[ePadKeys::KEY_SPRINT] = true;
+		} else {
+			LocalPlayerKeys.bKeys[ePadKeys::KEY_SPRINT] = false;
+		}
+
 		return LocalPlayerKeys.wKeyUD;
 	}
 }
