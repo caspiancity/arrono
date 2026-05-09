@@ -10,7 +10,8 @@
 extern CSettings* pSettings;
 
 /* scaling */
-ImVec2 UISettings::m_baseSize = ImVec2(640.0f, 480.0f);
+/* scaling */
+ImVec2 UISettings::m_baseSize = ImVec2(1280.0f, 720.0f); // Antes era 640x480
 ImVec2 UISettings::m_scaleFactor = ImVec2(1.0f, 1.0f);
 
 /* font */
