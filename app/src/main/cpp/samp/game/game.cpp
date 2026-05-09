@@ -712,24 +712,28 @@ bool CGame::InitialiseRenderWare() {
     // 0.5f a 0.7f é o padrão. Se colocar muito alto, pesa na GPU.
     CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, screenAspect);
 	}*/
-	if (Scene.m_pRwCamera) {
-    // 1. Pegamos a resolução nativa
-    float width = (float)RsGlobal->maximumWidth;
-    float height = (float)RsGlobal->maximumHeight;
+	// Em vez de usar CameraSize, vamos forçar os valores no motor gráfico
+    if (Scene.m_pRwCamera) {
+        // 1. Pegue a resolução real do dispositivo
+        int width = RsGlobal->maximumWidth;
+        int height = RsGlobal->maximumHeight;
 
-    // 2. Definimos um fator de esticamento (Stretched)
-    // 4:3 (1.333f) ou 16:10 (1.6f) são os mais usados.
-    // Quanto menor o valor abaixo, mais esticada a tela fica.
-    float stretchedAspect = 1.333333f; 
+        // 2. Defina manualmente o Raster da câmera (o "tamanho do desenho")
+        // Isso impede que o GUI ache que a tela é 0x0 ou 640x480
+        Scene.m_pRwCamera->frameBuffer->width = width;
+        Scene.m_pRwCamera->frameBuffer->height = height;
+        
+        // 3. Atualize o View Window (o FOV interno do RenderWare)
+        // 0.4f é o valor que você queria para performance
+        Scene.m_pRwCamera->viewWindow.x = 0.4f;
+        Scene.m_pRwCamera->viewWindow.y = 0.4f;
 
-    // 3. CameraSize com FOV (Field of View) ajustado
-    // Use 0.4f como você queria para focar no desempenho (ganha muito FPS)
-    //CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, stretchedAspect);
-
-    // 4. Correção de FOV para não parecer que está "dentro" do personagem
-    // Isso compensa a visão lateral que você perde ao esticar
-    //SetFOV(70.0f); // Ajuste conforme seu gosto
-	}
+        // 4. Calcule o Aspect Ratio manualmente para a GUI
+        float aspect = (float)width / (float)height;
+        Scene.m_pRwCamera->recipViewWindow.x = 1.0f / 0.4f;
+        Scene.m_pRwCamera->recipViewWindow.y = aspect / 0.4f;
+    }
+	
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
     bb.inf = {-10'000.0f, -10'000.0f, -10'000.0f};
@@ -782,7 +786,7 @@ extern UI *pUI;
 void MainLoop();
 void CGame::Process() {
     if(bIsGameExiting)return;
-   // static int streamingTick = 0; // Adicione esta linha aqui!
+   static int streamingTick = 0; // Adicione esta linha aqui!
     MainLoop();
     if (pNetGame)
     {
@@ -796,12 +800,12 @@ void CGame::Process() {
                 pUI->buttonpanel()->m_bH->setCaption("H");
         }
 
-        CObjectPool* pObjectPool = pNetGame->GetObjectPool();
+        /**CObjectPool* pObjectPool = pNetGame->GetObjectPool();
         if (pObjectPool) {
             pObjectPool->Process();
-            pObjectPool->ProcessMaterialText();
-        }
-     /*   CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
+     pObjectPool->ProcessMaterialText();
+        }*/
+        CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
         if (pObjectPool) {
             // Otimização: Só processa objetos se não estiver em pausa
             if (!CTimer::m_CodePause) {
@@ -809,11 +813,11 @@ void CGame::Process() {
             }
             // MaterialText é pesado, você pode limitar a frequência também
             static int matTick = 0;
-            if(matTick++ >= 5) { 
+            if(matTick++ >= 10) { 
                 pObjectPool->ProcessMaterialText();
                 matTick = 0;
             }
-        }*/
+        }
 
         CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
         if (pTextDrawPool) {
@@ -837,10 +841,10 @@ void CGame::Process() {
     CurrentTimeInCycles = CTimer::GetCurrentTimeInCycles();
     v1 = CurrentTimeInCycles / CTimer::GetCyclesPerMillisecond();
 
-    CStreaming::Update();
+    //CStreaming::Update();
     //fix mas fps
     // No game.cpp
-/*static int streamingTick = 0;
+static int streamingTick = 0;
 auto pStreaming = pGame->GetStreaming();
 
 if (pGame && pStreaming) {
@@ -857,7 +861,7 @@ if (pGame && pStreaming) {
             streamingTick = 0;
         }
     }
-}*/
+}
     
 
     v2 = CTimer::GetCurrentTimeInCycles();
