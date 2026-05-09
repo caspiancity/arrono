@@ -262,6 +262,29 @@ void DoInitStuff()
 }
 
 extern "C" {
+    JNIEXPORT void JNICALL
+    Java_com_samp_mobile_game_SAMP_sendMsgChat(JNIEnv *env, jobject thiz, jbyteArray str) {
+        // 1. Converte jbyteArray para char* (C++)
+        jsize len = env->GetArrayLength(str);
+        jbyte* bytes = env->GetByteArrayElements(str, nullptr);
+        
+        char* buffer = new char[len + 1];
+        memcpy(buffer, bytes, len);
+        buffer[len] = '\0';
+    
+        // 2. Agora você chama a função interna do SAMP
+        if (pNetGame) {
+            if (buffer[0] == '/') {
+                pNetGame->SendChatCommand(buffer);
+            } else {
+                pNetGame->SendChatMessage(buffer);
+            }
+        }
+    
+        // 3. Limpa a memória
+        delete[] buffer;
+        env->ReleaseByteArrayElements(str, bytes, JNI_ABORT);
+    }
 	JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_initializeSAMP(JNIEnv *pEnv, jobject thiz)
 	{
 		pJavaWrapper = new CJavaWrapper(pEnv, thiz);
@@ -320,7 +343,7 @@ void MainLoop()
 
 }
 
-/*void InitGui()
+void InitGui()
 {
 	// new voice
 	Plugin::OnPluginLoad();
@@ -330,23 +353,6 @@ void MainLoop()
 	pUI = new UI(ImVec2(RsGlobal->maximumWidth, RsGlobal->maximumHeight), font_path.c_str());
 	pUI->initialize();
 	pUI->performLayout();
-}*/
-void InitGui()
-{
-    Plugin::OnPluginLoad();
-    Plugin::OnSampLoad();
-
-    std::string font_path = string_format("%sfonts/%s", g_pszStorage, FONT_NAME);
-
-    // Esqueça o RsGlobal por um momento, vamos usar a resolução do seu Redmi Note 12
-    float screenW = 2400.0f; 
-    float screenH = 1080.0f;
-
-    pUI = new UI(ImVec2(screenW, screenH), font_path.c_str());
-    pUI->initialize();
-    pUI->performLayout();
-
-    FLog("GUI Forçada Redmi Note 12: %.0f x %.0f", screenW, screenH);
 }
 
 #include "game/multitouch.h"
