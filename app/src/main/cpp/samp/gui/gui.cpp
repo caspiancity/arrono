@@ -103,7 +103,7 @@ bool UI::initialize()
 	// mem
 	Label* d_label1;
 
-	d_label1 = new Label(cryptor::create("1.2 Aura ROLEPLAY").decrypt(), ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 7);
+	d_label1 = new Label(cryptor::create("0.8.2.1 x1y2z").decrypt(), ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 3);
 	this->addChild(d_label1);
 	d_label1->setPosition(ImVec2(3.0, 3.0));
 
@@ -233,7 +233,7 @@ extern CGame *pGame;
 extern CSettings* pSettings;
 void UI::renderDebug()
 {
-    if(!pSettings->Get().iFPSCounter) return;
+    //if(!pSettings->Get().iFPSCounter) return;
 
     char szStr[30];
     char szStrMem[64];
@@ -250,7 +250,6 @@ void UI::renderDebug()
         snprintf(&szStr[0], sizeof(szStr), "FPS: %.0f", fps);
         if(pJavaWrapper) {
             // Adicionei a vírgula entre o ID (2) e o Tempo (12:20)
-            // FORMA CORRETA:
             pJavaWrapper->UpdateHudData(2, "12:20", 55, (int)fps);
         }
 
