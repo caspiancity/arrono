@@ -338,25 +338,15 @@ void InitGui()
 
     std::string font_path = string_format("%sfonts/%s", g_pszStorage, FONT_NAME);
 
-    // Tente pegar de Scene.m_pRwCamera se RsGlobal falhar
-    float screenW = (float)RsGlobal->maximumWidth;
-    float screenH = (float)RsGlobal->maximumHeight;
-
-    // Se o Log acusou 640x480, vamos forçar a detecção manual:
-    if(screenW == 640.0f && screenH == 480.0f) 
-    {
-        // Aqui você pode tentar pegar de outra variável global da sua base
-        // Ou, como teste para destravar agora, use valores fixos de uma tela HD:
-        screenW = 2400.0f; 
-        screenH = 1080.0f;
-        FLog("Resolução 640x480 detectada e REJEITADA. Forçando 1280x720.");
-    }
+    // Esqueça o RsGlobal por um momento, vamos usar a resolução do seu Redmi Note 12
+    float screenW = 2400.0f; 
+    float screenH = 1080.0f;
 
     pUI = new UI(ImVec2(screenW, screenH), font_path.c_str());
     pUI->initialize();
     pUI->performLayout();
 
-    FLog("GUI Destravada Real: %.0f x %.0f", screenW, screenH);
+    FLog("GUI Forçada Redmi Note 12: %.0f x %.0f", screenW, screenH);
 }
 
 #include "game/multitouch.h"
