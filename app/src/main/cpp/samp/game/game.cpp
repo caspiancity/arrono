@@ -714,25 +714,28 @@ bool CGame::InitialiseRenderWare() {
 	}*/
 	// Em vez de usar CameraSize, vamos forçar os valores no motor gráfico
     if (Scene.m_pRwCamera) {
-        // 1. Pegue a resolução real do dispositivo
-        int width = RsGlobal->maximumWidth;
-        int height = RsGlobal->maximumHeight;
+    // 1. Pegamos a resolução nativa do seu celular
+    float width = (float)RsGlobal->maximumWidth;
+    float height = (float)RsGlobal->maximumHeight;
 
-        // 2. Defina manualmente o Raster da câmera (o "tamanho do desenho")
-        // Isso impede que o GUI ache que a tela é 0x0 ou 640x480
-        Scene.m_pRwCamera->frameBuffer->width = width;
-        Scene.m_pRwCamera->frameBuffer->height = height;
-        
-        // 3. Atualize o View Window (o FOV interno do RenderWare)
-        // 0.4f é o valor que você queria para performance
-        Scene.m_pRwCamera->viewWindow.x = 0.4f;
-        Scene.m_pRwCamera->viewWindow.y = 0.4f;
+    // 2. EM VEZ DE USAR CameraSize, definimos os parâmetros internos na mão:
+    // Isso aqui diz ao RenderWare o tamanho real da tela
+    Scene.m_pRwCamera->viewWindow.x = 0.4f; // O valor de performance que você quer
+    Scene.m_pRwCamera->viewWindow.y = 0.4f * (height / width); 
+    
+    // Define o Aspect Ratio fixo (Stretched) sem chamar a função pesada
+    // 1.333333f é o 4:3 que você definiu
+    Scene.m_pRwCamera->recipViewWindow.x = 1.0f / 0.4f;
+    Scene.m_pRwCamera->recipViewWindow.y = 1.333333f / 0.4f;
 
-        // 4. Calcule o Aspect Ratio manualmente para a GUI
-        float aspect = (float)width / (float)height;
-        Scene.m_pRwCamera->recipViewWindow.x = 1.0f / 0.4f;
-        Scene.m_pRwCamera->recipViewWindow.y = aspect / 0.4f;
+    // Forçamos o Raster (buffer de imagem) a ocupar a tela toda
+    if(Scene.m_pRwCamera->frameBuffer) {
+        Scene.m_pRwCamera->frameBuffer->width = (int)width;
+        Scene.m_pRwCamera->frameBuffer->height = (int)height;
     }
+}
+// Agora você pode deixar a linha abaixo comentada:
+// CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, stretchedAspect);
 	
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
