@@ -79,19 +79,23 @@ ImColor UISettings::m_dialogTitleBackgroundColor = ImColor(0, 0, 0, 255);
 
 void UISettings::Initialize(const ImVec2& display_size)
 {
-	if(!pSettings) return;
-	
-	m_scaleFactor = display_size / m_baseSize;
+    if(!pSettings) return;
 
-	/* chat line count */
-	m_chatDispMesssages = pSettings->Get().iChatMaxMessages;
+    // A base agora é o tamanho real do seu Redmi
+    m_baseSize = display_size; 
+    m_scaleFactor = ImVec2(1.0f, 1.0f);
 
-	/* font */
-	m_fontSize *= m_scaleFactor.y;
+    // Ajuste da Fonte (5.5% da altura da tela = ~60px no seu Redmi)
+    m_fontSize = display_size.y * 0.055f; 
 
-	/* keyboard */
-	m_keyboardSize = m_keyboardSize * m_scaleFactor;
-	m_keyboardPos = m_keyboardPos * m_scaleFactor;
+    /* Chat - Posicionado para não bater no radar */
+    // X em 15% da tela (360px) tira o chat de cima do mapa
+    m_chatPos = ImVec2(display_size.x * 0.15f, display_size.y * 0.05f);
+    m_chatItemSize = ImVec2(display_size.x * 0.45f, m_fontSize * 1.2f);
+    
+    /* Teclado - Ocupando a parte de baixo */
+    m_keyboardSize = ImVec2(display_size.x, display_size.y * 0.40f);
+    m_keyboardPos = ImVec2(0.0f, display_size.y - m_keyboardSize.y);
 	m_keyboardRowHeight *= m_scaleFactor.y;
 
 	/* splashscreen */
