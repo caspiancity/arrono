@@ -347,8 +347,8 @@ void InitGui()
     {
         // Aqui você pode tentar pegar de outra variável global da sua base
         // Ou, como teste para destravar agora, use valores fixos de uma tela HD:
-        screenW = 1280.0f; 
-        screenH = 720.0f;
+        screenW = 2400.0f; 
+        screenH = 1080.0f;
         FLog("Resolução 640x480 detectada e REJEITADA. Forçando 1280x720.");
     }
 
