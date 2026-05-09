@@ -320,7 +320,7 @@ void MainLoop()
 
 }
 
-void InitGui()
+/*void InitGui()
 {
 	// new voice
 	Plugin::OnPluginLoad();
@@ -330,6 +330,31 @@ void InitGui()
 	pUI = new UI(ImVec2(RsGlobal->maximumWidth, RsGlobal->maximumHeight), font_path.c_str());
 	pUI->initialize();
 	pUI->performLayout();
+}*/
+void InitGui()
+{
+    // new voice
+    Plugin::OnPluginLoad();
+    Plugin::OnSampLoad();
+
+    std::string font_path = string_format("%sfonts/%s", g_pszStorage, FONT_NAME);
+
+    // PEGA A RESOLUÇÃO REAL DO SISTEMA
+    float screenW = (float)RsGlobal->maximumWidth;
+    float screenH = (float)RsGlobal->maximumHeight;
+
+    // SE VIER ZERADO OU MUITO PEQUENO, FORÇAMOS A ESCALA DO ANDROID
+    if(screenW <= 300.0f) screenW = 1280.0f; 
+    if(screenH <= 300.0f) screenH = 720.0f;
+
+    // CRIA A UI COM O TAMANHO CORRETO
+    pUI = new UI(ImVec2(screenW, screenH), font_path.c_str());
+    
+    // IMPORTANTE: Recalcular o layout após criar
+    pUI->initialize();
+    pUI->performLayout();
+    
+    FLog("GUI Destravada: %.0f x %.0f", screenW, screenH);
 }
 
 #include "game/multitouch.h"
