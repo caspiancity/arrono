@@ -628,9 +628,9 @@ void CGame::InitialiseOnceBeforeRW() {
     CHook::CallFunction<void>("_ZN4CPad10InitialiseEv");
 }
 
-void CameraSize(RwCamera* camera, RwRect* rect, RwReal viewWindow, RwReal aspectRatio) {
-    CHook::CallFunction<void>(g_libGTASA + 0x6F7F84, camera, rect, viewWindow, aspectRatio);
-}
+//void CameraSize(RwCamera* camera, RwRect* rect, RwReal viewWindow, RwReal aspectRatio) {
+//    CHook::CallFunction<void>(g_libGTASA + 0x6F7F84, camera, rect, viewWindow, aspectRatio);
+//}
 
 void CameraDestroy(RwCamera* camera) {
     CHook::CallFunction<void>(g_libGTASA + 0x6F80C0, camera);
@@ -724,7 +724,7 @@ bool CGame::InitialiseRenderWare() {
 
     // 3. CameraSize com FOV (Field of View) ajustado
     // Use 0.4f como você queria para focar no desempenho (ganha muito FPS)
-    CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, stretchedAspect);
+    //CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, stretchedAspect);
 
     // 4. Correção de FOV para não parecer que está "dentro" do personagem
     // Isso compensa a visão lateral que você perde ao esticar
