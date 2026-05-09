@@ -28,11 +28,28 @@ extern UI* pUI;
 
 extern CJavaWrapper *pJavaWrapper;
 
-UI::UI(const ImVec2& display_size, const std::string& font_path)
+/*UI::UI(const ImVec2& display_size, const std::string& font_path)
 	: Widget(), ImGuiWrapper(display_size, font_path)
 {
 	UISettings::Initialize(display_size);
 	this->setFixedSize(display_size);
+}*/
+
+UI::UI(const ImVec2& display_size, const std::string& font_path)
+    : Widget(), ImGuiWrapper(display_size, font_path)
+{
+    // DEFINA UMA RESOLUÇÃO DE REFERÊNCIA (Ex: 720p)
+    // Isso fará com que o Chat, Botões e HUD fiquem no tamanho "padrão"
+    ImVec2 fixed_resolution = ImVec2(1280.0f, 720.0f);
+
+    // Inicializa as configurações de escala com a resolução fixa
+    UISettings::Initialize(fixed_resolution);
+
+    // Define que a interface deve se comportar como se a tela tivesse esse tamanho
+    this->setFixedSize(fixed_resolution);
+
+    // Log para confirmar no Logcat se a escala foi aplicada
+    // FLog("UI Initialized with Fixed Resolution: 1280x720");
 }
 
 bool UI::initialize()
@@ -103,7 +120,7 @@ bool UI::initialize()
 	// mem
 	Label* d_label1;
 
-	d_label1 = new Label(cryptor::create("0.8.2.1 x1y2z").decrypt(), ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 3);
+	d_label1 = new Label(cryptor::create("0.0.0.1 Aura RP").decrypt(), ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 3);
 	this->addChild(d_label1);
 	d_label1->setPosition(ImVec2(3.0, 3.0));
 
@@ -248,13 +265,19 @@ void UI::renderDebug()
             fps = std::clamp(CTimer::game_FPS, 10.f, (float) 120);
         }
         snprintf(&szStr[0], sizeof(szStr), "FPS: %.0f", fps);
-        if(pJavaWrapper) {
+        /*if(pJavaWrapper) {
             // Adicionei a vírgula entre o ID (2) e o Tempo (12:20)
             pJavaWrapper->UpdateHudData(2, "12:20", 55, (int)fps);
+        }*/
+        if(pJavaWrapper && pNetGame && pNetGame->GetPlayerPool()) {
+            int meuPing = pNetGame->GetPlayerPool()->GetLocalPlayerPing();
+            
+            // Agora o primeiro parâmetro não é mais "2", é o seu ping real!
+            pJavaWrapper->UpdateHudData(meuPing, "12:20", 55, (int)fps);
         }
 
-        label->setText(&szStr[0]);
-        label->setPosition(pos);
+       // label->setText(&szStr[0]);
+       // label->setPosition(pos);
 }
 
 void UI::PushToBufferedQueueTextDrawPressed(uint16_t textdrawId)
