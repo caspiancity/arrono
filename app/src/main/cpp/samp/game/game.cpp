@@ -713,7 +713,7 @@ bool CGame::InitialiseRenderWare() {
     CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, screenAspect);
 	}*/
 	// Em vez de usar CameraSize, vamos forçar os valores no motor gráfico
-    if (Scene.m_pRwCamera) {
+    /*if (Scene.m_pRwCamera) {
     // 1. Pegamos a resolução nativa do seu celular
     float width = (float)RsGlobal->maximumWidth;
     float height = (float)RsGlobal->maximumHeight;
@@ -733,7 +733,7 @@ bool CGame::InitialiseRenderWare() {
         Scene.m_pRwCamera->frameBuffer->width = (int)width;
         Scene.m_pRwCamera->frameBuffer->height = (int)height;
     }
-}
+}*/
 // Agora você pode deixar a linha abaixo comentada:
 // CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, stretchedAspect);
 	
@@ -789,7 +789,7 @@ extern UI *pUI;
 void MainLoop();
 void CGame::Process() {
     if(bIsGameExiting)return;
-   static int streamingTick = 0; // Adicione esta linha aqui!
+  // static int streamingTick = 0; // Adicione esta linha aqui!
     MainLoop();
     if (pNetGame)
     {
@@ -806,7 +806,7 @@ void CGame::Process() {
         CObjectPool* pObjectPool = pNetGame->GetObjectPool();
         if (pObjectPool) {
             pObjectPool->Process();
-     pObjectPool->ProcessMaterialText();
+         pObjectPool->ProcessMaterialText();
         }
        /* CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
         if (pObjectPool) {
