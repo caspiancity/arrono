@@ -43,7 +43,7 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     env->DeleteLocalRef(clas);
 }
 
-void CJavaWrapper::UpdateHudData(int ping, const char* time, int cpu, int fps)
+void CJavaWrapper::updateHudData(int ping, const char* time, int cpu, int fps)
 {
     JNIEnv* env;
     javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
