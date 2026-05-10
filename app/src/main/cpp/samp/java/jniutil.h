@@ -28,6 +28,8 @@ public:
     
     void ShowKeyboard();
     void HideKeyboard();
+    
+    void showFps();
 
 	void exitGame();
 
@@ -59,4 +61,5 @@ public:
 	jmethodID s_showEditObject;
 	jmethodID s_hideEditObject;
 	jmethodID s_updateHudData;
+	jmethodID s_showFps;
 };
