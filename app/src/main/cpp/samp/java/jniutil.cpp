@@ -37,7 +37,7 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     
     // Verifique se o nome aqui "UpdateHudInfo" está igual ao do Java
    // s_updateHudInfo = env->GetMethodID(clas, "UpdateHudInfo", "(IIIIIIII)V");
-    s_updateHudInfo = env->GetMethodID(clas, "updateHudInfo", "(IIIIIIII)V");
+    //s_updateHudInfo = env->GetMethodID(clas, "updateHudInfo", "(IIIIIIII)V");
     s_showFps = env->GetMethodID(clas, "showFps", "()V");
 
     env->DeleteLocalRef(clas);
@@ -89,7 +89,7 @@ void CJavaWrapper::showFps()
     }
 }*/
 
-void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
+/*void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
 {
     JNIEnv* env;
     // Tenta pegar o ENV. Se retornar JNI_EDETACHED, a thread precisa ser anexada.
@@ -114,7 +114,7 @@ void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponi
         env->ExceptionDescribe();
         env->ExceptionClear();
     }
-}
+}*/
 
 void CJavaWrapper::ShowKeyboard()
 {
