@@ -237,7 +237,7 @@ void Render2dStuff()
         // 5. Chamada segura para o Java
         if(pJavaWrapper)
         {
-            pJavaWrapper->UpdateHudInfo(
+            pJavaWrapper->updateHudInfo(
                 (int)pLocalPed->GetHealth(),      // Vida
                 (int)pLocalPed->GetArmour(),      // Colete
                 0,                                // Fome (Hunger)
