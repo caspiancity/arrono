@@ -73,7 +73,7 @@ void CJavaWrapper::showFps()
     EXCEPTION_CHECK(p);
 }
 
-void CJavaWrapper::UpdateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
+void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
 {
     JNIEnv* env;
     if (javaVM->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK) return;
