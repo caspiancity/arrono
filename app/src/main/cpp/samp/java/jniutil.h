@@ -18,6 +18,7 @@ public:
     
     const char* GetClipboardString();
     void UpdateHudData(int ping, const char* time, int cpu, int fps);
+    void UpdateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted);
     void SetPauseState(bool pause);
     void ShowLoadingScreen();
     void HideLoadingScreen();
@@ -62,4 +63,6 @@ public:
 	jmethodID s_hideEditObject;
 	jmethodID s_updateHudData;
 	jmethodID s_showFps;
+	
+	jmethodID s_updateHudInfo;
 };
