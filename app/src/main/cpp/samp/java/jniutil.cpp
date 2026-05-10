@@ -73,7 +73,7 @@ void CJavaWrapper::showFps()
     EXCEPTION_CHECK(p);
 }
 
-void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
+/*void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
 {
     JNIEnv* env;
     if (javaVM->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK) return;
@@ -86,6 +86,33 @@ void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponi
     } else {
         // Se cair aqui, o GetMethodID falhou no construtor do CJavaWrapper
          FLog("Erro: s_updateHudInfo nao foi encontrado no Java!");
+    }
+}*/
+
+void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
+{
+    JNIEnv* env;
+    // Tenta pegar o ENV. Se retornar JNI_EDETACHED, a thread precisa ser anexada.
+    jint res = javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
+
+    if (res == JNI_EDETACHED) {
+        if (javaVM->AttachCurrentThread(&env, NULL) != JNI_OK) {
+            return; // Falhou ao anexar, ignora para não crashar
+        }
+    } else if (res != JNI_OK || !env) {
+        return; // Erro desconhecido
+    }
+
+    // Agora é seguro chamar o Java
+    if (activity && s_updateHudInfo) {
+        env->CallVoidMethod(activity, s_updateHudInfo, 
+            health, armour, hunger, weaponidweik, ammo, ammoinclip, money, wanted);
+    }
+    
+    // EXCEPTION_CHECK é fundamental para não acumular erros no Java
+    if (env->ExceptionCheck()) {
+        env->ExceptionDescribe();
+        env->ExceptionClear();
     }
 }
 
