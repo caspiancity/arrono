@@ -249,7 +249,7 @@ if(pGame && pNetGame)
         // 4. Chamada para o Java
         if(pJavaWrapper)
         {
-            pJavaWrapper->UpdateHudInfo(
+            pJavaWrapper->updateHudInfo(
                 (int)pLocalPed->GetHealth(),
                 (int)pLocalPed->GetArmour(),
                 0, // Hunger
