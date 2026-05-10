@@ -628,9 +628,9 @@ void CGame::InitialiseOnceBeforeRW() {
     CHook::CallFunction<void>("_ZN4CPad10InitialiseEv");
 }
 
-//void CameraSize(RwCamera* camera, RwRect* rect, RwReal viewWindow, RwReal aspectRatio) {
-//    CHook::CallFunction<void>(g_libGTASA + 0x6F7F84, camera, rect, viewWindow, aspectRatio);
-//}
+void CameraSize(RwCamera* camera, RwRect* rect, RwReal viewWindow, RwReal aspectRatio) {
+    CHook::CallFunction<void>(g_libGTASA + 0x6F7F84, camera, rect, viewWindow, aspectRatio);
+}
 
 void CameraDestroy(RwCamera* camera) {
     CHook::CallFunction<void>(g_libGTASA + 0x6F80C0, camera);
@@ -701,7 +701,7 @@ bool CGame::InitialiseRenderWare() {
     TheCamera.SetRwCamera(Scene.m_pRwCamera);
     RwCameraSetFarClipPlane(Scene.m_pRwCamera, 400.0f);
     RwCameraSetNearClipPlane(Scene.m_pRwCamera, 0.9f);
-   // CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
+    CameraSize(Scene.m_pRwCamera, nullptr, 0.0f, 4.0f / 3.0f);
 	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
     //CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 1.2f);
 	//CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
@@ -921,11 +921,11 @@ if (pGame && pStreaming) {
 
         // FIXME: add if
        // ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
-      /*  static int popTick = 0;         //fix +fps diminuir a frequência de atualização de NPC
+        static int popTick = 0;         //fix +fps diminuir a frequência de atualização de NPC
         if(popTick++ >= 3) {
             ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); 
             popTick = 0;
-        }*/
+        }
         
         ((void (*)()) (g_libGTASA + 0x700AF4))(); // CWeapon::UpdateWeapons()
 //		if ( !CCutsceneMgr::ms_running )
