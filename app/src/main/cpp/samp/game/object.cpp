@@ -14,6 +14,8 @@ extern MaterialTextGenerator* pMaterialTextGenerator;
 
 CObject::CObject(int iModel, CVector vecPos, CVector vecRot, float fDrawDistance, uint8_t bAttached)
 {
+	UI::uiStreamedObject++;
+    (new Chat)->addDebugMessage("add strm obj");
     if(!CModelInfo::GetModelInfo(iModel))
         iModel = 18631; // ????????
 
@@ -94,19 +96,6 @@ CObject::~CObject()
 
 void CObject::Process(float fElapsedTime)
 {
-	/*if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
-    {
-        CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
-        if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
-        {
-            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
-            float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
-            
-            // Se o objeto estiver a mais de 250m, aí sim a gente pode ignorar.
-            // Menos que isso, o chão corre risco de sumir.
-            if (fDist > 250.0f) return; 
-        }
-	}*/
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
 	{
 		if (pNetGame)
@@ -247,7 +236,7 @@ void CObject::Process(float fElapsedTime)
 		}
 
         // CPhysical::Remove
-        ((void (*)(CEntityGTA*))(*(uintptr_t*)( *(uintptr*)(m_pEntity) + 0x10*2 )))(m_pEntity);
+        ((void (*)(CEntityGTA*))(*(uintptr_t*)( *(uintptr*)(m_pEntity) + (VER_x32 ? 0x10 : 0x10*2) )))(m_pEntity);
 
 		m_pEntity->SetMatrix((CMatrix&)matEnt);
         m_pEntity->UpdateRW();
@@ -283,7 +272,7 @@ void CObject::InstantRotate(float x, float y, float z)
     z = DegreesToRadians(z);
 
     // CPhysical::Remove
-    ((void (*)(CEntityGTA*))(*(uintptr_t*)( *(uintptr*)(m_pEntity) + 0x10*2 )))(m_pEntity);
+    ((void (*)(CEntityGTA*))(*(uintptr_t*)( *(uintptr*)(m_pEntity) + (VER_x32 ? 0x10 : 0x10*2) )))(m_pEntity);
 
     m_pEntity->SetOrientation(x, y, z);
 
@@ -413,19 +402,6 @@ void CObject::SetMaterialText(int index, char* text, int materialSize, char* fon
 
 void CObject::ProcessMaterialText()
 {
-	if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
-    {
-        CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
-        if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
-        {
-            // Usando GetPosition() que confirmamos ser o correto
-            CVector pos = pLocal->GetPlayerPed()->m_pPed->GetPosition();
-            float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
-            
-            // Se o texto estiver a mais de 60m, não gasta CPU/GPU gerando a textura
-            if (fDist > 20.0f) return; 
-        }
-	}
 	for (int i = 0; i < 16; i++)
 	{
 		if (m_iMaterialType[i] == MATERIAL_TYPE_TEXT && m_MaterialTextTexture[i] == 0)
@@ -457,7 +433,7 @@ void CObject::MoveTo(float fX, float fY, float fZ, float fSpeed, float fRotX, fl
 		}
 
         // CPhysical::Remove
-        ((void (*)(CEntityGTA*))(*(uintptr_t*)( *(uintptr*)(m_pEntity) + 0x10*2 )))(m_pEntity);
+        ((void (*)(CEntityGTA*))(*(uintptr_t*)( *(uintptr*)(m_pEntity) + (VER_x32 ? 0x10 : 0x10*2) )))(m_pEntity);
 
 		m_pEntity->SetMatrix((CMatrix&)mat);
         m_pEntity->UpdateRW();
@@ -550,26 +526,13 @@ void CObject::SetAttachedObject(uint16_t ObjectID, CVector* vecPos, CVector* vec
 // 0.3.7
 void CObject::SetAttachedVehicle(uint16_t VehicleID, CVector* vecPos, CVector* vecRot)
 {
-	if (VehicleID == INVALID_VEHICLE_ID)
-	{
-		m_AttachedVehicleID = INVALID_VEHICLE_ID;
-		m_vecAttachedPos.x = 0.0f;
-		m_vecAttachedPos.y = 0.0f;
-		m_vecAttachedPos.z = 0.0f;
-		m_vecAttachedRot.x = 0.0f;
-		m_vecAttachedRot.y = 0.0f;
-		m_vecAttachedRot.z = 0.0f;
-	}
-	else
-	{
-		m_AttachedVehicleID = VehicleID;
-		m_vecAttachedPos.x = vecPos->x;
-		m_vecAttachedPos.y = vecPos->y;
-		m_vecAttachedPos.z = vecPos->z;
-		m_vecAttachedRot.x = vecRot->x;
-		m_vecAttachedRot.y = vecRot->y;
-		m_vecAttachedRot.z = vecRot->z;
-	}
+    m_AttachedVehicleID = VehicleID;
+    m_vecAttachedPos.x = vecPos->x;
+    m_vecAttachedPos.y = vecPos->y;
+    m_vecAttachedPos.z = vecPos->z;
+    m_vecAttachedRot.x = vecRot->x;
+    m_vecAttachedRot.y = vecRot->y;
+    m_vecAttachedRot.z = vecRot->z;
 } 
 // 0.3.7
 void CObject::AttachToVehicle(CVehicle* pVehicle)
