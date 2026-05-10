@@ -247,7 +247,7 @@ if(pGame && pNetGame)
         }
 
         // 4. Chamada para o Java
-        if(pJavaWrapper)
+        /*if(pJavaWrapper)
         {
             pJavaWrapper->updateHudInfo(
                 (int)pLocalPed->GetHealth(),
@@ -259,7 +259,7 @@ if(pGame && pNetGame)
                 pGame->GetLocalMoney(),
                 0 // Wanted
             );
-        }
+        }*/
     }
 }
 
