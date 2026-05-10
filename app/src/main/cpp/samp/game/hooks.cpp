@@ -198,54 +198,66 @@ void Render2dStuff()
         if(pTextDrawPool) pTextDrawPool->Draw();
     }
     CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
-    if(pGame && pNetGame)
+if(pGame && pNetGame)
 {
-    // 1. Verifica se o Ped local do GTA existe
+    // 1. Verifica se o Ped do GTA existe
     CPlayerPed *pLocalPed = pGame->FindPlayerPed();
     if(!pLocalPed) return;
 
-    // 2. Verifica se o Pool de jogadores do SAMP existe
+    // 2. Verifica o Pool e LocalPlayer do SAMP
     CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
     if(!pPlayerPool) return;
 
-    // 3. Verifica se o Objeto LocalPlayer existe
     CLocalPlayer *pLocalPlayer = pPlayerPool->GetLocalPlayer();
     if(!pLocalPlayer) return;
 
-    // 4. Acesso ao Ped do SA-MP e ao Ped Nativo (m_pPed)
-    // Esse pPedSA é o que contém a lista de armas m_aWeapons
-    if(pLocalPlayer->GetPlayerPed() && pLocalPlayer->GetPlayerPed()->m_pPed)
+    // 3. Pega o CPlayerPed do SAMP
+    CPlayerPed *pSampPed = pLocalPlayer->GetPlayerPed();
+    if(pSampPed)
     {
-        struct ped_sa *pPedSA = pLocalPlayer->GetPlayerPed()->m_pPed;
-
-        // Pegamos o slot da arma atual
-        uint8_t weaponSlot = pPedSA->m_nActiveWeaponSlot;
-        
-        // Dados padrão caso algo falhe
+        // Variáveis para armazenar os dados
         int weaponID = 0;
         int ammo = 0;
         int ammoClip = 0;
 
-        // Verifica se o slot é válido (0 a 12 no GTA SA)
-        if(weaponSlot >= 0 && weaponSlot < 13)
+        // No seu projeto, o CPlayerPed geralmente tem métodos diretos ou o m_pPed é do tipo CPed
+        // Vamos tentar acessar de forma que não dependa da struct interna ped_sa
+        auto pPedGta = pSampPed->m_pPed; 
+        if(pPedGta)
         {
-            weaponID = pPedSA->m_aWeapons[weaponSlot].dwType;
-            ammo = pPedSA->m_aWeapons[weaponSlot].dwAmmo;
-            ammoClip = pPedSA->m_aWeapons[weaponSlot].dwAmmoInClip;
+            // Tenta usar os métodos da classe CPed ou acessar m_aWeapons se CPed for conhecido
+            // Se der erro em m_aWeapons, seu projeto usa métodos pPedGta->GetWeaponInSlot(...)
+            weaponID = pSampPed->GetCurrentWeapon(); 
+            
+            // Para munição, se não tiver pSampPed->GetAmmo(), vamos usar o que você tinha
+            // mas sem declarar "struct ped_sa"
+            int slot = *(uint8_t*)((uintptr_t)pPedGta + 0x718); // Offset comum do slot de arma
+            
+            // Se o compilador reclamar de 'struct ped_sa', use o casting direto:
+            // Isso acessa a memória sem precisar do header da struct
+            uintptr_t weaponArray = (uintptr_t)pPedGta + 0x5A0; // Offset comum das armas
+            struct temp_weapon { uint32_t type; uint32_t state; uint32_t ammoInClip; uint32_t ammo; };
+            temp_weapon* weapons = (temp_weapon*)weaponArray;
+
+            if(slot >= 0 && slot < 13) {
+                weaponID = weapons[slot].type;
+                ammo = weapons[slot].ammo;
+                ammoClip = weapons[slot].ammoInClip;
+            }
         }
 
-        // 5. Chamada segura para o Java
+        // 4. Chamada para o Java
         if(pJavaWrapper)
         {
-            pJavaWrapper->updateHudInfo(
-                (int)pLocalPed->GetHealth(),      // Vida
-                (int)pLocalPed->GetArmour(),      // Colete
-                0,                                // Fome (Hunger)
-                weaponID,                         // ID da Arma
-                ammo,                             // Munição Total
-                ammoClip,                         // Munição no Pente
-                pGame->GetLocalMoney(),           // Dinheiro
-                0                                 // Wanted Level
+            pJavaWrapper->UpdateHudInfo(
+                (int)pLocalPed->GetHealth(),
+                (int)pLocalPed->GetArmour(),
+                0, // Hunger
+                weaponID,
+                ammo,
+                ammoClip,
+                pGame->GetLocalMoney(),
+                0 // Wanted
             );
         }
     }
