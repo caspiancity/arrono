@@ -1,8 +1,10 @@
-﻿#include "../main.h"
+#include "../main.h"
 #include "../game/game.h"
 #include "netgame.h"
 #include "localplayer.h"
 #include "../gui/gui.h"
+
+#include "../java/jniutil.h"
 
 // voice
 #include "../voice_new/MicroIcon.h"
@@ -18,6 +20,8 @@ extern int iNetModeNormalOnFootSendRate;
 extern int iNetModeNormalInCarSendRate;
 extern int iNetModeFiringSendRate;
 extern int iNetModeSendMultiplier;
+
+extern CJavaWrapper *pJavaWrapper;
 
 bool m_bWasInCar = false;
 
@@ -604,6 +608,8 @@ bool CLocalPlayer::Spawn()
     CCamera::SetBehindPlayer();
 	pGame->DisplayHUD(true);
 	m_pPlayerPed->TogglePlayerControllable(true);
+	
+	pJavaWrapper->showFps();
 
 	if (!bFirstSpawn) {
 		m_pPlayerPed->SetInitialState();
