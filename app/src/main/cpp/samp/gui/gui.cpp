@@ -275,7 +275,7 @@ void UI::renderDebug()
             int meuPing = pNetGame->GetPlayerPool()->GetLocalPlayerPing();
             
             // Agora o primeiro parâmetro não é mais "2", é o seu ping real!
-            pJavaWrapper->UpdateHudData(meuPing, "12:20", 55, (int)fps);
+            pJavaWrapper->updateHudData(meuPing, "12:20", 55, (int)fps);
         }
 
        // label->setText(&szStr[0]);
