@@ -119,6 +119,8 @@ bool UI::initialize()
 
 	// mem
 	Label* d_label1;
+	
+	pJavaWrapper->showFps();
 
 	d_label1 = new Label(cryptor::create("0.0.0.1 Aura RP").decrypt(), ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 3);
 	this->addChild(d_label1);
@@ -260,47 +262,21 @@ void UI::renderDebug()
 
     static float fps = 120.f;
         static auto lastTick = CTimer::m_snTimeInMillisecondsNonClipped;
-        /*if(CTimer::m_snTimeInMillisecondsNonClipped - lastTick > 500) {
+        if(CTimer::m_snTimeInMillisecondsNonClipped - lastTick > 500) {
             lastTick = CTimer::m_snTimeInMillisecondsNonClipped;
             fps = std::clamp(CTimer::game_FPS, 10.f, (float) 120);
-        }*/
-
-
-	if(CTimer::m_snTimeInMillisecondsNonClipped - lastTick > 500) {
-    lastTick = CTimer::m_snTimeInMillisecondsNonClipped;
-    
-    // Atualiza FPS e Ping
-    fps = std::clamp(CTimer::game_FPS, 10.f, (float)120);
-    if(pNetGame) pNetGame->UpdatePlayerScoresAndPings();
-
-    if(pJavaWrapper && pNetGame && pNetGame->GetPlayerPool()) {
-        // 1. Pega Ping Real
-        int meuPing = pNetGame->GetPlayerPool()->GetLocalPlayerPing();
-
-        // 2. Pega Hora Real do Jogo
-        int h, m;
-        pGame->GetWorldTime(&h, &m);
-        char timeBuf[10];
-        snprintf(timeBuf, sizeof(timeBuf), "%02d:%02d", h, m);
-
-        // 3. Simula CPU (ou usa valor fixo de desempenho)
-        int cpuUso = 40 + (rand() % 15); 
-
-        // ENVIA TUDO PARA O JAVA (HUD)
-        pJavaWrapper->UpdateHudData(meuPing, timeBuf, cpuUso, (int)fps); 
-    }
-	}
-       // snprintf(&szStr[0], sizeof(szStr), "FPS: %.0f", fps);
+        }
+        snprintf(&szStr[0], sizeof(szStr), "FPS: %.0f", fps);
         /*if(pJavaWrapper) {
             // Adicionei a vírgula entre o ID (2) e o Tempo (12:20)
             pJavaWrapper->UpdateHudData(2, "12:20", 55, (int)fps);
         }*/
-       /* if(pJavaWrapper && pNetGame && pNetGame->GetPlayerPool()) {
+        if(pJavaWrapper && pNetGame && pNetGame->GetPlayerPool()) {
             int meuPing = pNetGame->GetPlayerPool()->GetLocalPlayerPing();
             
             // Agora o primeiro parâmetro não é mais "2", é o seu ping real!
             pJavaWrapper->UpdateHudData(meuPing, "12:20", 55, (int)fps);
-        }*/
+        }
 
        // label->setText(&szStr[0]);
        // label->setPosition(pos);
