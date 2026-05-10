@@ -43,7 +43,7 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     env->DeleteLocalRef(clas);
 }
 
-void CJavaWrapper::updateHudData(int ping, const char* time, int cpu, int fps)
+void CJavaWrapper::UpdateHudData(int ping, const char* time, int cpu, int fps)
 {
     JNIEnv* env;
     javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
@@ -73,7 +73,7 @@ void CJavaWrapper::showFps()
     EXCEPTION_CHECK(p);
 }
 
-void CJavaWrapper::UpdateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
+void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
 {
     JNIEnv* env;
     javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
