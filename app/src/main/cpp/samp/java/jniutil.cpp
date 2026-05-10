@@ -37,6 +37,8 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     
     // Verifique se o nome aqui "UpdateHudInfo" está igual ao do Java
     s_updateHudInfo = env->GetMethodID(clas, "UpdateHudInfo", "(IIIIIIII)V");
+    
+    s_showFps = env->GetMethodID(clas, "showFps", "()V");
 
     env->DeleteLocalRef(clas);
 }
@@ -58,6 +60,17 @@ void CJavaWrapper::UpdateHudData(int ping, const char* time, int cpu, int fps)
     env->DeleteLocalRef(jTime);
 
     EXCEPTION_CHECK(env);
+}
+
+void CJavaWrapper::showFps()
+{
+    JNIEnv* p;
+    if (javaVM->GetEnv((void**)&p, JNI_VERSION_1_6) != JNI_OK) return;
+    
+    if (activity && s_showFps) { // SEMPRE verifique se o ID s_showFps existe
+        p->CallVoidMethod(activity, s_showFps);
+    }
+    EXCEPTION_CHECK(p);
 }
 
 void CJavaWrapper::UpdateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
