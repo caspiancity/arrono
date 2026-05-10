@@ -36,7 +36,7 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     s_updateHudData = env->GetMethodID(clas, "updateHudData", "(ILjava/lang/String;II)V");
     
     // Verifique se o nome aqui "UpdateHudInfo" está igual ao do Java
-    s_updateHudInfo = env->GetMethodID(nvEventClass, "UpdateHudInfo", "(IIIIIIII)V");
+    s_updateHudInfo = env->GetMethodID(clas, "UpdateHudInfo", "(IIIIIIII)V");
 
     env->DeleteLocalRef(clas);
 }
@@ -62,7 +62,8 @@ void CJavaWrapper::UpdateHudData(int ping, const char* time, int cpu, int fps)
 
 void CJavaWrapper::UpdateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
 {
-    JNIEnv* env = GetEnv();
+    JNIEnv* env;
+    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
     if (!env) return;
 
     // Chama o método no Java com os 8 argumentos
