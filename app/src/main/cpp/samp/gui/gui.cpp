@@ -120,7 +120,7 @@ bool UI::initialize()
 	// mem
 	Label* d_label1;
 	
-	pJavaWrapper->showFps();
+	//pJavaWrapper->showFps();
 
 	d_label1 = new Label(cryptor::create("0.0.0.1 Aura RP").decrypt(), ImColor(1.0f, 1.0f, 1.0f), true, UISettings::fontSize() / 3);
 	this->addChild(d_label1);
