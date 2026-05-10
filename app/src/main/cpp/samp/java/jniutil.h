@@ -63,6 +63,5 @@ public:
 	jmethodID s_hideEditObject;
 	jmethodID s_updateHudData;
 	jmethodID s_showFps;
-	
 	jmethodID s_updateHudInfo;
 };
