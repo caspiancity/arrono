@@ -259,7 +259,7 @@ if(pGame && pNetGame)
                 pGame->GetLocalMoney(),
                 0 // Wanted
             );
-        }*/
+        }
     }
 }*/
 
