@@ -73,15 +73,20 @@ void CJavaWrapper::showFps()
     EXCEPTION_CHECK(p);
 }
 
-void CJavaWrapper::updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
+void CJavaWrapper::UpdateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted)
 {
     JNIEnv* env;
-    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
+    if (javaVM->GetEnv((void**)&env, JNI_VERSION_1_6) != JNI_OK) return;
     if (!env) return;
 
-    // Chama o método no Java com os 8 argumentos
-    env->CallVoidMethod(this->activity, this->s_updateHudInfo, 
-        health, armour, hunger, weaponidweik, ammo, ammoinclip, money, wanted);
+    // Verificação de segurança: Só chama se o ID do método foi encontrado no construtor
+    if (activity && s_updateHudInfo) {
+        env->CallVoidMethod(this->activity, this->s_updateHudInfo, 
+            health, armour, hunger, weaponidweik, ammo, ammoinclip, money, wanted);
+    } else {
+        // Se cair aqui, o GetMethodID falhou no construtor do CJavaWrapper
+         FLog("Erro: s_updateHudInfo nao foi encontrado no Java!");
+    }
 }
 
 void CJavaWrapper::ShowKeyboard()
