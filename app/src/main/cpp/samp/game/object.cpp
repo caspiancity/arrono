@@ -94,7 +94,7 @@ CObject::~CObject()
 
 void CObject::Process(float fElapsedTime)
 {
-	if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
+	/*if (m_pEntity && pNetGame && pNetGame->GetPlayerPool()) 
     {
         CLocalPlayer* pLocal = pNetGame->GetPlayerPool()->GetLocalPlayer();
         if (pLocal && pLocal->GetPlayerPed() && pLocal->GetPlayerPed()->m_pPed) 
@@ -106,7 +106,7 @@ void CObject::Process(float fElapsedTime)
             // Menos que isso, o chão corre risco de sumir.
             if (fDist > 250.0f) return; 
         }
-	}
+	}*/
 	if (m_AttachedVehicleID != INVALID_VEHICLE_ID)
 	{
 		if (pNetGame)
@@ -423,7 +423,7 @@ void CObject::ProcessMaterialText()
             float fDist = m_pEntity->GetDistanceFromPoint(pos.x, pos.y, pos.z);
             
             // Se o texto estiver a mais de 60m, não gasta CPU/GPU gerando a textura
-            if (fDist > 60.0f) return; 
+            if (fDist > 20.0f) return; 
         }
 	}
 	for (int i = 0; i < 16; i++)
