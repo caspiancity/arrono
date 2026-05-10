@@ -198,29 +198,58 @@ void Render2dStuff()
         if(pTextDrawPool) pTextDrawPool->Draw();
     }
     CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
-    if(pGame)
+    if(pGame && pNetGame)
+{
+    // 1. Verifica se o Ped local do GTA existe
+    CPlayerPed *pLocalPed = pGame->FindPlayerPed();
+    if(!pLocalPed) return;
+
+    // 2. Verifica se o Pool de jogadores do SAMP existe
+    CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
+    if(!pPlayerPool) return;
+
+    // 3. Verifica se o Objeto LocalPlayer existe
+    CLocalPlayer *pLocalPlayer = pPlayerPool->GetLocalPlayer();
+    if(!pLocalPlayer) return;
+
+    // 4. Acesso ao Ped do SA-MP e ao Ped Nativo (m_pPed)
+    // Esse pPedSA é o que contém a lista de armas m_aWeapons
+    if(pLocalPlayer->GetPlayerPed() && pLocalPlayer->GetPlayerPed()->m_pPed)
     {
-        if(pNetGame)
+        struct ped_sa *pPedSA = pLocalPlayer->GetPlayerPed()->m_pPed;
+
+        // Pegamos o slot da arma atual
+        uint8_t weaponSlot = pPedSA->m_nActiveWeaponSlot;
+        
+        // Dados padrão caso algo falhe
+        int weaponID = 0;
+        int ammo = 0;
+        int ammoClip = 0;
+
+        // Verifica se o slot é válido (0 a 12 no GTA SA)
+        if(weaponSlot >= 0 && weaponSlot < 13)
         {
-            if(pGame->FindPlayerPed() || GamePool_FindPlayerPed())
-            {
-                CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-                if(pPlayerPool)
-                {
-                    pJavaWrapper->updateHudInfo(
-                        (int)pGame->FindPlayerPed()->GetHealth(),
-                        (int)pGame->FindPlayerPed()->GetArmour(),
-                        0, // Hunger (Fome) - se tiver a variavel, coloque aqui
-                        pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwType,
-                        pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwAmmo,
-                        pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwAmmoInClip,
-                        pGame->GetLocalMoney(),
-                        0 // Wanted level
-                    );
-                }
-            }
+            weaponID = pPedSA->m_aWeapons[weaponSlot].dwType;
+            ammo = pPedSA->m_aWeapons[weaponSlot].dwAmmo;
+            ammoClip = pPedSA->m_aWeapons[weaponSlot].dwAmmoInClip;
+        }
+
+        // 5. Chamada segura para o Java
+        if(pJavaWrapper)
+        {
+            pJavaWrapper->UpdateHudInfo(
+                (int)pLocalPed->GetHealth(),      // Vida
+                (int)pLocalPed->GetArmour(),      // Colete
+                0,                                // Fome (Hunger)
+                weaponID,                         // ID da Arma
+                ammo,                             // Munição Total
+                ammoClip,                         // Munição no Pente
+                pGame->GetLocalMoney(),           // Dinheiro
+                0                                 // Wanted Level
+            );
         }
     }
+}
 
     if (pUI) pUI->render();
 }
