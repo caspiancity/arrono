@@ -17,7 +17,7 @@ public:
     ~CJavaWrapper() {};
     
     const char* GetClipboardString();
-    void UpdateHudData(int ping, const char* time, int cpu, int fps);
+    void updateHudData(int ping, const char* time, int cpu, int fps);
     void updateHudInfo(int health, int armour, int hunger, int weaponidweik, int ammo, int ammoinclip, int money, int wanted);
     void SetPauseState(bool pause);
     void ShowLoadingScreen();
