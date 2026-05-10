@@ -36,8 +36,8 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     s_updateHudData = env->GetMethodID(clas, "updateHudData", "(ILjava/lang/String;II)V");
     
     // Verifique se o nome aqui "UpdateHudInfo" está igual ao do Java
-    s_updateHudInfo = env->GetMethodID(clas, "UpdateHudInfo", "(IIIIIIII)V");
-    
+   // s_updateHudInfo = env->GetMethodID(clas, "UpdateHudInfo", "(IIIIIIII)V");
+    s_updateHudInfo = env->GetMethodID(clas, "updateHudInfo", "(IIIIIIII)V");
     s_showFps = env->GetMethodID(clas, "showFps", "()V");
 
     env->DeleteLocalRef(clas);
