@@ -130,6 +130,40 @@ void Render2dStuff_hook()
     if (pUI) pUI->render();
     return;
 }*/
+/*void Render2dStuff()
+{
+    if( CHook::CallFunction<bool>(g_libGTASA + 0x24EA90) ) // emu_IsAltRenderTarget()
+        CHook::CallFunction<void>(g_libGTASA + 0x24F5B8); // emu_FlushAltRenderTarget()
+
+    RwRenderStateSet(rwRENDERSTATEZTESTENABLE, RWRSTATE(FALSE));
+    RwRenderStateSet(rwRENDERSTATEZWRITEENABLE, RWRSTATE(FALSE));
+    RwRenderStateSet(rwRENDERSTATEVERTEXALPHAENABLE, RWRSTATE(TRUE));
+    RwRenderStateSet(rwRENDERSTATESRCBLEND, RWRSTATE(rwBLENDSRCALPHA));
+    RwRenderStateSet(rwRENDERSTATEDESTBLEND, RWRSTATE(rwBLENDINVSRCALPHA));
+    RwRenderStateSet(rwRENDERSTATEFOGENABLE, RWRSTATE(rwRENDERSTATENARENDERSTATE));
+    RwRenderStateSet(rwRENDERSTATECULLMODE, RWRSTATE(rwCULLMODECULLNONE));
+
+    //((void (*)()) (g_libGTASA + 0x51CFF0))(); // CHud::DrawRadar
+    //CHook::CallFunction<void>("_ZN4CHud14DrawScriptTextEh", true);
+    CHook::CallFunction<void>("_ZN4CHud4DrawEv");
+    //	GPS::Draw();
+    //
+    ((void(*)(bool) )(g_libGTASA + 0x36FB00) )(false); // CTouchInterface::DrawAll
+
+    CHook::CallFunction<void>("_Z12emu_GammaSeth", 1);
+
+    ((void (*)(bool)) (g_libGTASA + 0x66B678))(1u); // CMessages::Display - gametext
+    ((void (*)(bool)) (g_libGTASA + 0x6CCEA0))(1u); // CFont::RenderFontBuffer
+    CHook::CallFunction<void>("_Z12emu_GammaSeth", 0);
+
+    if(pNetGame)
+    {
+        CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
+        if(pTextDrawPool) pTextDrawPool->Draw();
+    }
+
+    if (pUI) pUI->render();
+}*/
 void Render2dStuff()
 {
     if( CHook::CallFunction<bool>(g_libGTASA + 0x24EA90) ) // emu_IsAltRenderTarget()
@@ -160,6 +194,30 @@ void Render2dStuff()
     {
         CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
         if(pTextDrawPool) pTextDrawPool->Draw();
+    }
+    CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+    if(pGame)
+    {
+        if(pNetGame)
+        {
+            if(pGame->FindPlayerPed() || GamePool_FindPlayerPed())
+            {
+                CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
+                if(pPlayerPool)
+                {
+                    pJavaWrapper->updateHudInfo(
+                        (int)pGame->FindPlayerPed()->GetHealth(),
+                        (int)pGame->FindPlayerPed()->GetArmour(),
+                        0, // Hunger (Fome) - se tiver a variavel, coloque aqui
+                        pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwType,
+                        pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwAmmo,
+                        pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwAmmoInClip,
+                        pGame->GetLocalMoney(),
+                        0 // Wanted level
+                    );
+                }
+            }
+        }
     }
 
     if (pUI) pUI->render();
