@@ -132,7 +132,7 @@ void Render2dStuff_hook()
     if (pUI) pUI->render();
     return;
 }*/
-/*void Render2dStuff()
+void Render2dStuff()
 {
     if( CHook::CallFunction<bool>(g_libGTASA + 0x24EA90) ) // emu_IsAltRenderTarget()
         CHook::CallFunction<void>(g_libGTASA + 0x24F5B8); // emu_FlushAltRenderTarget()
@@ -165,8 +165,8 @@ void Render2dStuff_hook()
     }
 
     if (pUI) pUI->render();
-}*/
-void Render2dStuff()
+}
+/*void Render2dStuff()
 {
     if( CHook::CallFunction<bool>(g_libGTASA + 0x24EA90) ) // emu_IsAltRenderTarget()
         CHook::CallFunction<void>(g_libGTASA + 0x24F5B8); // emu_FlushAltRenderTarget()
@@ -261,7 +261,7 @@ if(pGame && pNetGame)
             );
         }*/
     }
-}
+}*/
 
     if (pUI) pUI->render();
 }
