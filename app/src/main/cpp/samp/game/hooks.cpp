@@ -34,6 +34,8 @@ extern CGame* pGame;
 extern CNetGame *pNetGame;
 extern MaterialTextGenerator* pMaterialTextGenerator;
 
+extern CJavaWrapper* pJavaWrapper;
+
 uint8_t byteInternalPlayer = 0;
 CPedGTA* dwCurPlayerActor = 0;
 uint8_t byteCurPlayer = 0;
@@ -1107,7 +1109,7 @@ void CCamera__Process_hook(uintptr_t thiz)
 	CCamera__Process(thiz);
 }
 
-extern CJavaWrapper* pJavaWrapper;
+//extern CJavaWrapper* pJavaWrapper;
 void (*MainMenuScreen__OnExit)();
 void MainMenuScreen__OnExit_hook()
 {
