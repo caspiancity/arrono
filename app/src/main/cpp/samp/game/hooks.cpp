@@ -132,7 +132,7 @@ void Render2dStuff_hook()
     if (pUI) pUI->render();
     return;
 }*/
-/*void Render2dStuff()
+void Render2dStuff()
 {
     if( CHook::CallFunction<bool>(g_libGTASA + 0x24EA90) ) // emu_IsAltRenderTarget()
         CHook::CallFunction<void>(g_libGTASA + 0x24F5B8); // emu_FlushAltRenderTarget()
@@ -164,9 +164,33 @@ void Render2dStuff_hook()
         if(pTextDrawPool) pTextDrawPool->Draw();
     }
 
+	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+    if(pGame)
+    {
+        if(pNetGame)
+        {
+            if(pGame->FindPlayerPed() || GamePool_FindPlayerPed())
+            {
+                CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
+                if(pPlayerPool)
+                {
+                    pJavaWrapper->UpdateHudInfo(
+                            pGame->FindPlayerPed()->GetHealth(),
+                            pGame->FindPlayerPed()->GetArmour(),
+                            0,
+                            pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwType,
+                            pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwAmmo,
+                            pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwAmmoInClip,
+                            pGame->GetLocalMoney(),
+                            0);
+                }
+            }
+        }
+}
+
     if (pUI) pUI->render();
-}*/
-void Render2dStuff()
+}
+/*void Render2dStuff()
 {
     if( CHook::CallFunction<bool>(g_libGTASA + 0x24EA90) ) // emu_IsAltRenderTarget()
         CHook::CallFunction<void>(g_libGTASA + 0x24F5B8); // emu_FlushAltRenderTarget()
@@ -264,7 +288,7 @@ if(pGame && pNetGame)
 }
 
     if (pUI) pUI->render();
-}
+}*/
 
 /* =============================================================================== */
 
