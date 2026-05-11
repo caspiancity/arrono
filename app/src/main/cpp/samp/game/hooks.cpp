@@ -132,7 +132,7 @@ void Render2dStuff_hook()
     if (pUI) pUI->render();
     return;
 }*/
-void Render2dStuff()
+/*void Render2dStuff()
 {
     if( CHook::CallFunction<bool>(g_libGTASA + 0x24EA90) ) // emu_IsAltRenderTarget()
         CHook::CallFunction<void>(g_libGTASA + 0x24F5B8); // emu_FlushAltRenderTarget()
@@ -165,8 +165,8 @@ void Render2dStuff()
     }
 
     if (pUI) pUI->render();
-}
-/*void Render2dStuff()
+}*/
+void Render2dStuff()
 {
     if( CHook::CallFunction<bool>(g_libGTASA + 0x24EA90) ) // emu_IsAltRenderTarget()
         CHook::CallFunction<void>(g_libGTASA + 0x24F5B8); // emu_FlushAltRenderTarget()
@@ -247,24 +247,24 @@ if(pGame && pNetGame)
         }
 
         // 4. Chamada para o Java
-        /*if(pJavaWrapper)
+        if(pJavaWrapper)
         {
             pJavaWrapper->updateHudInfo(
                 (int)pLocalPed->GetHealth(),
                 (int)pLocalPed->GetArmour(),
-                0, // Hunger
+                2, // Hunger
                 weaponID,
                 ammo,
                 ammoClip,
                 pGame->GetLocalMoney(),
-                0 // Wanted
+                2 // Wanted
             );
         }
     }
 }
 
     if (pUI) pUI->render();
-}*/
+}
 
 /* =============================================================================== */
 
