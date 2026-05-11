@@ -699,10 +699,44 @@ bool CGame::InitialiseRenderWare() {
     Scene.m_pRwCamera = camera;
     TheCamera.Init();
     TheCamera.SetRwCamera(Scene.m_pRwCamera);
-    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 2000.0f);
+    RwCameraSetFarClipPlane(Scene.m_pRwCamera, 800.0f);
     RwCameraSetNearClipPlane(Scene.m_pRwCamera, 0.9f);
-    CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
+    CameraSize(Scene.m_pRwCamera, nullptr, 0.0f, 4.0f / 3.0f);
+	// Teste com 1.2f para ver os personagens bem largos (bom pra mira)
+    //CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 1.2f);
+	//CameraSize(Scene.m_pRwCamera, nullptr, 0.7f, 4.0f / 3.0f);
+	/*if (Scene.m_pRwCamera) {
+    // Pegue o aspecto real da tela para não bugar a GUI
+    float screenAspect = (float)RsGlobal->maximumWidth / (float)RsGlobal->maximumHeight;
+    
+    // 0.5f a 0.7f é o padrão. Se colocar muito alto, pesa na GPU.
+    CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, screenAspect);
+	}*/
+	// Em vez de usar CameraSize, vamos forçar os valores no motor gráfico
+    /*if (Scene.m_pRwCamera) {
+    // 1. Pegamos a resolução nativa do seu celular
+    float width = (float)RsGlobal->maximumWidth;
+    float height = (float)RsGlobal->maximumHeight;
 
+    // 2. EM VEZ DE USAR CameraSize, definimos os parâmetros internos na mão:
+    // Isso aqui diz ao RenderWare o tamanho real da tela
+    Scene.m_pRwCamera->viewWindow.x = 0.4f; // O valor de performance que você quer
+    Scene.m_pRwCamera->viewWindow.y = 0.4f * (height / width); 
+    
+    // Define o Aspect Ratio fixo (Stretched) sem chamar a função pesada
+    // 1.333333f é o 4:3 que você definiu
+    Scene.m_pRwCamera->recipViewWindow.x = 1.0f / 0.4f;
+    Scene.m_pRwCamera->recipViewWindow.y = 1.333333f / 0.4f;
+
+    // Forçamos o Raster (buffer de imagem) a ocupar a tela toda
+    if(Scene.m_pRwCamera->frameBuffer) {
+        Scene.m_pRwCamera->frameBuffer->width = (int)width;
+        Scene.m_pRwCamera->frameBuffer->height = (int)height;
+    }
+}*/
+// Agora você pode deixar a linha abaixo comentada:
+// CameraSize(Scene.m_pRwCamera, nullptr, 0.4f, stretchedAspect);
+	
     RwBBox bb;
     bb.sup = { 10'000.0f,  10'000.0f,  10'000.0f};
     bb.inf = {-10'000.0f, -10'000.0f, -10'000.0f};
@@ -719,7 +753,7 @@ bool CGame::InitialiseRenderWare() {
     CFont::Initialise();
     CHook::CallFunction<void>(g_libGTASA + 0x55C1C8); // CHud::Initialise();
     CHook::CallFunction<void>(g_libGTASA + 0x6D5970); // CPlayerSkin::Initialise();
-    CHook::CallFunction<void>(g_libGTASA + 0x6D6E30); // CPostEffects::Initialise();
+   // +fps CHook::CallFunction<void>(g_libGTASA + 0x6D6E30); // CPostEffects::Initialise();
     CGame::m_pWorkingMatrix1 = RwMatrixCreate();
     CGame::m_pWorkingMatrix2 = RwMatrixCreate();
 
@@ -755,7 +789,7 @@ extern UI *pUI;
 void MainLoop();
 void CGame::Process() {
     if(bIsGameExiting)return;
-
+  // static int streamingTick = 0; // Adicione esta linha aqui!
     MainLoop();
     if (pNetGame)
     {
@@ -772,8 +806,21 @@ void CGame::Process() {
         CObjectPool* pObjectPool = pNetGame->GetObjectPool();
         if (pObjectPool) {
             pObjectPool->Process();
-            pObjectPool->ProcessMaterialText();
+         pObjectPool->ProcessMaterialText();
         }
+       /* CObjectPool* pObjectPool = pNetGame->GetObjectPool(); //+fps
+        if (pObjectPool) {
+            // Otimização: Só processa objetos se não estiver em pausa
+            if (!CTimer::m_CodePause) {
+                pObjectPool->Process();
+            }
+            // MaterialText é pesado, você pode limitar a frequência também
+            static int matTick = 0;
+            if(matTick++ >= 10) { 
+                pObjectPool->ProcessMaterialText();
+                matTick = 0;
+            }
+        }*/
 
         CTextDrawPool* pTextDrawPool = pNetGame->GetTextDrawPool();
         if (pTextDrawPool) {
@@ -798,6 +845,27 @@ void CGame::Process() {
     v1 = CurrentTimeInCycles / CTimer::GetCyclesPerMillisecond();
 
     CStreaming::Update();
+    //fix mas fps
+    // No game.cpp
+/**static int streamingTick = 0;
+auto pStreaming = pGame->GetStreaming();
+
+if (pGame && pStreaming) {
+    // Se o jogo estiver carregando muita coisa (fila cheia), 
+    // atualizamos todo frame para evitar o crash.
+    // Se a fila estiver baixa, voltamos a pular frames para ganhar FPS.
+    if (pStreaming->m_nNumModelsRequested > 10) { 
+        pStreaming->Update();
+        streamingTick = 0;
+    } else {
+        streamingTick++;
+        if (streamingTick >= 5) { 
+            pStreaming->Update();
+            streamingTick = 0;
+        }
+    }
+}*/
+    
 
     v2 = CTimer::GetCurrentTimeInCycles();
     v3 = v2 / CTimer::GetCyclesPerMillisecond();
@@ -852,14 +920,19 @@ void CGame::Process() {
         ((void (*)(uintptr_t *)) (g_libGTASA + 0x4D361C))(gFireManager); // CFireManager::Update
 
         // FIXME: add if
-        ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
-
+       // ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); // CPopulation::Update нужно (
+       /* static int popTick = 0;         //fix +fps diminuir a frequência de atualização de NPC
+        if(popTick++ >= 3) {
+            ((void(*)(bool))(g_libGTASA + 0x5CB5E0))(false); 
+            popTick = 0;
+        }*/
+        
         ((void (*)()) (g_libGTASA + 0x700AF4))(); // CWeapon::UpdateWeapons()
 //		if ( !CCutsceneMgr::ms_running )
 //			CTheCarGenerators::Process();
 //		CCranes::UpdateCranes();
 //		CClouds::Update();
-        ((void (*)()) (g_libGTASA + 0x6CA130))(); // CMovingThings::Update();
+        // +fps((void (*)()) (g_libGTASA + 0x6CA130))(); // CMovingThings::Update();
         ((void(*)())(g_libGTASA + 0x6F04CC))(); // CWaterCannons::Update()
 //		CUserDisplay::Process();
         ((void (*)()) (g_libGTASA + 0x50BE40))(); // CWorld::Process()
@@ -873,11 +946,11 @@ void CGame::Process() {
             CHook::CallFunction<void>(g_libGTASA+0x3D4134); //CGarages::Update();
 // 			CEntryExitManager::Update();
             CHook::CallFunction<void>(g_libGTASA+0x4304D0); //	CStuntJumpManager::Update();
-            ((void (*)()) (g_libGTASA + 0x6C13F0))(); // CBirds::Update()
+            // +fps((void (*)()) (g_libGTASA + 0x6C13F0))(); // CBirds::Update()
             ((void (*)()) (g_libGTASA + 0x6E4A7C))(); // CSpecialFX::Update()
             // CRopes::Update();
         }
-        ((void (*)()) (g_libGTASA + 0x6D6E34))(); // CPostEffects::Update()
+      //  ((void (*)()) (g_libGTASA + 0x6D6E34))(); // CPostEffects::Update() REMOVI FIX MONTIOM BLUE + FPS
         ((void (*)()) (g_libGTASA + 0x502ADC))(); // CTimeCycle::Update() crash without
         // CPopCycle::Update()
 
@@ -894,7 +967,7 @@ void CGame::Process() {
 
         ((void (*)()) (g_libGTASA + 0x6C75E4))(); // CCoronas::DoSunAndMoon()
         ((void (*)()) (g_libGTASA + 0x6C5BE0))(); // CCoronas::Update()
-        ((void (*)()) (g_libGTASA + 0x6E1BC4))(); // CShadows::UpdatePermanentShadows()
+     //fix +FPS  desativando sombras ((void (*)()) (g_libGTASA + 0x6E1BC4))(); // CShadows::UpdatePermanentShadows()
 
         // CPlantMgr::Update
 
