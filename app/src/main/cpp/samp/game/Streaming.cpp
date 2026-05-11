@@ -358,7 +358,6 @@ void CStreaming::AddModelsToRequestList(const CVector* point, int32 streamingFla
 
 #include "Textures/TextureDatabaseRuntime.h"
 extern CNetGame *pNetGame;
-//void CStreaming::Update() {
 void CStreaming::Update() {
 
     if (CTimer::GetIsPaused())
@@ -443,7 +442,7 @@ void CStreaming::Update() {
     if (ms_bEnableRequestListPurge) {
         PurgeRequestList();
     }
-}    
+}
 
 // Call `RemoveModel` on all models in the request list except
 // those ones which have either `KEEP_IN_MEMORY` or `PRIORITY_REQUEST` flag(s) set.
