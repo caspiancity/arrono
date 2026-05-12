@@ -40,8 +40,24 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     s_updateHudInfo = env->GetMethodID(clas, "updateHudInfo", "(IIIIIIII)V");
     s_showFps = env->GetMethodID(clas, "showFps", "()V");
 	s_showHud = env->GetMethodID(clas, "showHud", "()V");
-
+   //mapa
+	s_showMap = env->GetMethodID(nvEventClass, "showMap", "()V");/////////////
+	
     env->DeleteLocalRef(clas);
+}
+
+//mapa
+void CJavaWrapper::showMap()
+{
+    JNIEnv* env = GetEnv();
+
+    if (!env)
+    {
+        FLog("No env");
+        return;
+    }
+    //g_pJavaWrapper->ShowNotification(4, "Худ успешно подключен", 5, "", ">>");
+    env->CallVoidMethod(this->activity, this->s_showMap);
 }
 
 void CJavaWrapper::updateHudData(int ping, const char* time, int cpu, int fps)
