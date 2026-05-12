@@ -31,6 +31,7 @@ public:
     void HideKeyboard();
     
     void showFps();
+    void showHud();
 
 	void exitGame();
 
@@ -64,4 +65,5 @@ public:
 	jmethodID s_updateHudData;
 	jmethodID s_showFps;
 	jmethodID s_updateHudInfo;
+    jmethodID s_showHud;
 };
