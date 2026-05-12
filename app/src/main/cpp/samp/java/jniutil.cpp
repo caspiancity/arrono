@@ -39,6 +39,7 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
    // s_updateHudInfo = env->GetMethodID(clas, "UpdateHudInfo", "(IIIIIIII)V");
     s_updateHudInfo = env->GetMethodID(clas, "updateHudInfo", "(IIIIIIII)V");
     s_showFps = env->GetMethodID(clas, "showFps", "()V");
+	s_showHud = env->GetMethodID(clas, "showHud", "()V");
 
     env->DeleteLocalRef(clas);
 }
@@ -69,6 +70,16 @@ void CJavaWrapper::showFps()
     
     if (activity && s_showFps) { // SEMPRE verifique se o ID s_showFps existe
         p->CallVoidMethod(activity, s_showFps);
+    }
+    EXCEPTION_CHECK(p);
+}
+void CJavaWrapper::showHud()
+{
+    JNIEnv* p;
+    if (javaVM->GetEnv((void**)&p, JNI_VERSION_1_6) != JNI_OK) return;
+    
+    if (activity && s_showFps) { // SEMPRE verifique se o ID s_showFps existe
+        p->CallVoidMethod(activity, s_showHud);
     }
     EXCEPTION_CHECK(p);
 }
