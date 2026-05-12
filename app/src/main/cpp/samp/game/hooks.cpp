@@ -40,6 +40,10 @@ uint8_t byteInternalPlayer = 0;
 CPedGTA* dwCurPlayerActor = 0;
 uint8_t byteCurPlayer = 0;
 
+static float lastHealth = 0.0f;
+static float lastArmour = 0.0f;
+static int lastMoney = -1;
+
 extern "C" uintptr_t get_lib()
 {
 	return g_libGTASA;
