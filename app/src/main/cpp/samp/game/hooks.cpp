@@ -29,6 +29,116 @@
 #include "CrossHair.h"
 #include "World.h"
 
+//mapa
+//#include "game_sa/CHUD.h"
+
+bool edgarmap = false;
+float xmap = 0;
+float ymap = 0;
+float zmap = 0;
+void SetMap(float x, float y, float z)
+{
+    xmap = x;
+    ymap = y;
+    zmap = z;
+}
+#include "..//util.h"
+#include "game_sa/CHUD.h"
+#include "game/Widgets/WidgetGta.h"
+
+void (*CSprite2d__Draw)(CSprite2d* a1, CRect* a2, CRGBA* a3);
+void CSprite2d__Draw_hook(CSprite2d* a1, CRect* a2, CRGBA* a3)
+{
+    uintptr_t dwRetAddr = 0;
+    __asm__ volatile ("mov %0, lr" : "=r" (dwRetAddr));
+    dwRetAddr -= g_libGTASA;
+
+    if (!pUI)
+    {
+        return CSprite2d__Draw(a1, a2, a3);
+    }
+
+    //if (dwRetAddr == 0x0051D530 + 1 || dwRetAddr == 0x0051D500 + 1 || dwRetAddr == 0x0051D4CC + 1 || dwRetAddr == 0x0051D498 + 1)
+    //{
+        CSprite2d* radar = new CSprite2d();
+        radar->m_pTexture = (RwTexture*)CUtil::LoadTextureFromDB("radar", "fg_hud_map");
+        //radar->m_pRwTexture = CHUD::hud_radar;
+
+        CRGBA color;
+        color.a = 255;
+        color.r = 255;
+        color.g = 255;
+        color.b = 255;
+
+        if(CHUD::IsEnabled()) radar->Draw(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1, &color);
+
+       /* CWidgetGta::pWidgets = (uintptr_t*)(g_libGTASA + 0x008D2010); //.bss:006F379C                 EXPORT _ZN15CTouchInterface10m_pWidgets
+        auto* radarr = (float*) CWidgetGta::pWidgets[0xA1];
+        if (radar)
+        {**/
+            /*if(CHUD::IsEnabled())
+            { // CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1
+                radarr[3] = CHUD::radar1.x1;
+                radarr[4] = CHUD::radar1.y1;
+
+                radarr[5] = 38.0f;
+                radarr[6] = 38.0f;
+            }*/
+            /*if(CHUD::IsEnabled())
+            {*/
+            /*
+            thiz[3]; // posX
+            thiz[4]; // posY
+
+            thiz[5]; // ScaleX
+            thiz[6]; // ScaleY
+            */
+/*
+            CRect* rect = (CRect*)&radarr[3];
+            CHUD::EditRadar(rect);*/
+
+            // CHUD::Render();
+            // ((void(*)())(g_libGTASA + 0x003D4ED8 + 1))(); // CHud::DrawRadar(void)
+           // }
+        //}
+
+    return CSprite2d__Draw(a1, a2, a3);
+}
+/* ====================================================== */
+//Radar
+// Num espaço vazio, talvez bem no fim.
+#include "sprite2d.h"
+void DrawRadarTexture(float x, float y, float size1, float size2)
+{
+    CSprite2d* radar = new CSprite2d();
+    radar->m_pTexture = (RwTexture*)CUtil::LoadTextureFromDB("radar", "bg_hud_map");
+    //radar->m_pRwTexture = CHUD::hud_radar;
+
+    CRGBA color;
+    color.a = 255;
+    color.r = 255;
+    color.g = 255;
+    color.b = 255;
+
+    radar->Draw(x, y, size1, size2, &color);
+}
+
+void(*CHud__Draw)();
+void CHud__Draw_hook()
+{
+    /*if(CHUD::IsEnabled())*/ //DrawRadarTexture(35.0f, 35.0f, 356.0f, 356.0f);
+
+    //float* thiz = (float*) * (uintptr_t*)(g_libGTASA + 0x6580C8);
+    //if (thiz)
+    //{
+    //	thiz[5] = 45.0f;
+    //	thiz[6] = 45.0f;
+    //}
+    if(CHUD::IsEnabled()) DrawRadarTexture(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1);
+
+    CHud__Draw();
+}
+
 extern UI* pUI;
 extern CGame* pGame;
 extern CNetGame *pNetGame;
@@ -1968,7 +2078,10 @@ void InstallHooks()
     //CHook::InlineHook("_ZN11CFileLoader18LoadObjectInstanceEPKc", &CFileLoader__LoadObjectInstance_hook, &CFileLoader__LoadObjectInstance);
 
     CHook::InlineHook("_ZN6CRadar9ClearBlipEi", &CRadar_ClearBlip_hook, &CRadar_ClearBlip);
-
+    //mapa
+    CHook::InlineHook("_ZN9CSprite2d4DrawERK5CRectRK5CRGBA", &CSprite2d__Draw_hook, &CSprite2d__Draw);
+    CHook::InlineHook("_ZN4CHud4DrawEv", &CHud__Draw_hook, &CHud__Draw); // EDGAR 3.0 RADAR MATRP 2.1 GTA
+       
     CHook::InlineHook("_ZN10CCollision19ProcessVerticalLineERK8CColLineRK7CMatrixR9CColModelR9CColPointRfbbP15CStoredCollPoly", &CCollision__ProcessVerticalLine_hook, &CCollision__ProcessVerticalLine);
 
     CHook::InlineHook("_ZN19CUpsideDownCarCheck15IsCarUpsideDownEPK8CVehicle", &CUpsideDownCarCheck__IsCarUpsideDown_hook, &CUpsideDownCarCheck__IsCarUpsideDown);
