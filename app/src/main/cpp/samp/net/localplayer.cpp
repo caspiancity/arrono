@@ -610,6 +610,7 @@ bool CLocalPlayer::Spawn()
 	m_pPlayerPed->TogglePlayerControllable(true);
 	
 	pJavaWrapper->showFps();
+	pJavaWrapper->showHud();
 
 	if (!bFirstSpawn) {
 		m_pPlayerPed->SetInitialState();
