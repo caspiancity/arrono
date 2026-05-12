@@ -32,6 +32,8 @@ public:
     
     void showFps();
     void showHud();
+    //mapa
+    void showMap();
 
 	void exitGame();
 
@@ -66,4 +68,5 @@ public:
 	jmethodID s_showFps;
 	jmethodID s_updateHudInfo;
     jmethodID s_showHud;
+    jmethodId s_showMap;
 };
