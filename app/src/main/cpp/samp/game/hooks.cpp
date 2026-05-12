@@ -165,27 +165,36 @@ void Render2dStuff()
     }
 
 	CLocalPlayer *pLocalPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
-    if(pGame)
+   if(pNetGame && pGame && pJavaWrapper)
     {
-        if(pNetGame)
+        CPlayerPed *pLocalPed = pGame->FindPlayerPed();
+        if(pLocalPed) 
         {
-            if(pGame->FindPlayerPed() || GamePool_FindPlayerPed())
+            float currentHealth = pLocalPed->GetHealth();
+            float currentArmour = pLocalPed->GetArmour();
+            int currentMoney = pGame->GetLocalMoney();
+
+            // SÓ ENVIA PARA O JAVA SE ALGO MUDAR
+            if(currentHealth != lastHealth || currentArmour != lastArmour || currentMoney != lastMoney)
             {
-                CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-                if(pPlayerPool)
-                {
-                    pJavaWrapper->UpdateHudInfo(
-                            pGame->FindPlayerPed()->GetHealth(),
-                            pGame->FindPlayerPed()->GetArmour(),
-                            0,
-                            pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwType,
-                            pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwAmmo,
-                            pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_aWeapons[pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pPed->m_nActiveWeaponSlot].dwAmmoInClip,
-                            pGame->GetLocalMoney(),
-                            0);
-                }
+                pJavaWrapper->updateHudInfo(
+                    (int)currentHealth,
+                    (int)currentArmour,
+                    0, // Fome
+                    0, // Weapon
+                    0, // Ammo
+                    0, // Clip
+                    currentMoney,
+                    0  // Wanted
+                );
+
+                // Atualiza os valores antigos
+                lastHealth = currentHealth;
+                lastArmour = currentArmour;
+                lastMoney = currentMoney;
             }
         }
+    }
 }
 
     if (pUI) pUI->render();
