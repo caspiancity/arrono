@@ -649,7 +649,8 @@ bool CLocalPlayer::Spawn()
 			m_SpawnInfo.iSpawnWeaponsAmmo[0]);
 	}
 
-	pGame->DisableTrainTraffic();
+	//pGame->DisableTrainTraffic();
+	pGame->DisplayHUD(false);
 
 	m_pPlayerPed->m_pPed->SetPosn(m_SpawnInfo.vecPos.x,
 		m_SpawnInfo.vecPos.y, m_SpawnInfo.vecPos.z + 0.5f);
