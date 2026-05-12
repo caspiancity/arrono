@@ -606,7 +606,7 @@ bool CLocalPlayer::Spawn()
 
 
     CCamera::SetBehindPlayer();
-	pGame->DisplayHUD(true);
+	//pGame->DisplayHUD(true);
 	m_pPlayerPed->TogglePlayerControllable(true);
 	
 	pJavaWrapper->showFps();
@@ -649,7 +649,7 @@ bool CLocalPlayer::Spawn()
 			m_SpawnInfo.iSpawnWeaponsAmmo[0]);
 	}
 
-	//pGame->DisableTrainTraffic();
+	pGame->DisableTrainTraffic();
 	pGame->DisplayHUD(false);
 
 	m_pPlayerPed->m_pPed->SetPosn(m_SpawnInfo.vecPos.x,
