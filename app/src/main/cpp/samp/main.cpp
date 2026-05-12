@@ -239,10 +239,10 @@ void DoInitStuff()
 		if (bDebug)
 		{
             CCamera& TheCamera = *reinterpret_cast<CCamera*>(g_libGTASA + 0xBBA8D0);
-            //TheCamera.Restore();
+            TheCamera.Restore();
             CCamera::SetBehindPlayer();
-			pGame->DisplayHUD(true);
-			pGame->EnableClock(false);
+			pGame->DisplayHUD(false);
+			pGame->EnableClock(true);
 
 			DoDebugStuff();
 		}
