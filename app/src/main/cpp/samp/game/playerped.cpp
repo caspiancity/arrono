@@ -1124,8 +1124,8 @@ void CPlayerPed::FireInstant()
 			*wCameraMode2 = 0;
 		}
 
-		GameStoreLocalPlayerCameraExtZoomAndAspect();
-		GameSetRemotePlayerCameraExtZoomAndAspect(m_bytePlayerNumber);
+		//GameStoreLocalPlayerCameraExtZoomAndAspect();
+		//GameSetRemotePlayerCameraExtZoomAndAspect(m_bytePlayerNumber);
 		GameStoreLocalPlayerAim();
 		GameSetRemotePlayerAim(m_bytePlayerNumber);
 		//GameStoreLocalPlayerSkills();
