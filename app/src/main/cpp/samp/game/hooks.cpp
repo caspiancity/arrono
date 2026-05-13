@@ -45,6 +45,7 @@ void SetMap(float x, float y, float z)
 #include "..//util.h"
 #include "game_sa/CHUD.h"
 #include "game/Widgets/WidgetGta.h"
+extern UI* pUI;
 
 void (*CSprite2d__Draw)(CSprite2d* a1, CRect* a2, CRGBA* a3);
 void CSprite2d__Draw_hook(CSprite2d* a1, CRect* a2, CRGBA* a3)
