@@ -82,7 +82,7 @@ void CHUD::EditRadarBios(CRect* rect)
 }*/
 extern "C"
 {
-    JNIEXPORT void JNICALL Java_ru_edgar_space_SAMP_SetRadarBgPos(JNIEnv *env, jobject thiz, jfloat x1, jfloat y1, jfloat x2, jfloat y2)
+    JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_SetRadarBgPos(JNIEnv *env, jobject thiz, jfloat x1, jfloat y1, jfloat x2, jfloat y2)
     {
         // -- обложка
         CHUD::radarBgPos1.x1 = x1;
@@ -96,7 +96,7 @@ extern "C"
         //		CHUD::radar1.y1 = y1;
     }
 
-    JNIEXPORT void JNICALL Java_ru_edgar_space_SAMP_SetRadarPos(JNIEnv *env, jobject thiz, jfloat x1, jfloat y1, jfloat x2, jfloat y2)
+    JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_SetRadarPos(JNIEnv *env, jobject thiz, jfloat x1, jfloat y1, jfloat x2, jfloat y2)
     {
         CHUD::radar1.x1 = x1;
         CHUD::radar1.y1 = y1;
@@ -105,7 +105,7 @@ extern "C"
         CHUD::radar1.y2 = y2;
     }
 
-    JNIEXPORT void JNICALL Java_ru_edgar_space_SAMP_SetRadarEnabled(JNIEnv *env, jobject thiz, jboolean tf)
+    JNIEXPORT void JNICALL Java_com_samp_mobile_game_SAMP_SetRadarEnabled(JNIEnv *env, jobject thiz, jboolean tf)
     {
         if(tf)
         {
