@@ -49,7 +49,8 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
 //mapa
 void CJavaWrapper::showMap()
 {
-    JNIEnv* env = GetEnv();
+    JNIEnv* env;
+    javaVM->GetEnv((void**)&env, JNI_VERSION_1_6);
 
     if (!env)
     {
