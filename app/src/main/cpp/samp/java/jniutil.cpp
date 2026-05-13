@@ -41,7 +41,7 @@ CJavaWrapper::CJavaWrapper(JNIEnv *env, jobject activity)
     s_showFps = env->GetMethodID(clas, "showFps", "()V");
 	s_showHud = env->GetMethodID(clas, "showHud", "()V");
    //mapa
-	s_showMap = env->GetMethodID(nvEventClass, "showMap", "()V");/////////////
+	s_showMap = env->GetMethodID(clas, "showMap", "()V");/////////////
 	
     env->DeleteLocalRef(clas);
 }
