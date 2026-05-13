@@ -33,7 +33,7 @@ void CHUD::Initialise()
     FLog("CHUD: Initialise");
 
     hud_radar = nullptr;
-    hud_radar = (RwTexture*)LoadTextureFromTxd("radar", "bg_hud_map");
+    hud_radar = (RwTexture*)LoadTextureFromTxd("txd", "map);
     FLog("CHUD: Loading..");
 }
 
