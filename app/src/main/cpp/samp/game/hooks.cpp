@@ -65,14 +65,20 @@ void CSprite2d__Draw_hook(CSprite2d* a1, CRect* a2, CRGBA* a3)
         radar->m_pTexture = (RwTexture*)CUtil::LoadTextureFromDB("txd", "map");
         //radar->m_pRwTexture = CHUD::hud_radar;
 
-        CRGBA color;
+        /,/*CRGBA color;
         color.a = 255;
         color.r = 255;
         color.g = 255;
-        color.b = 255;
+        color.b = 255;*/
 
-        if(CHUD::IsEnabled()) radar->Draw(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1, &color);
+      //  if(CHUD::IsEnabled()) radar->Draw(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1, &color);
+// Defina uma cor sólida (ex: Vermelho) para enxergar bem
+CRGBA color(255, 0, 0, 255); // R, G, B, Alpha
 
+// Desenha um quadrado sólido usando as coordenadas que vieram do Java
+// Se a função pedir 5 parâmetros, o último é a cor.
+CSprite2d::Draw(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, 
+                CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1, color);
        /* CWidgetGta::pWidgets = (uintptr_t*)(g_libGTASA + 0x008D2010); //.bss:006F379C                 EXPORT _ZN15CTouchInterface10m_pWidgets
         auto* radarr = (float*) CWidgetGta::pWidgets[0xA1];
         if (radar)
