@@ -62,7 +62,7 @@ void CSprite2d__Draw_hook(CSprite2d* a1, CRect* a2, CRGBA* a3)
     //if (dwRetAddr == 0x0051D530 + 1 || dwRetAddr == 0x0051D500 + 1 || dwRetAddr == 0x0051D4CC + 1 || dwRetAddr == 0x0051D498 + 1)
     //{
         CSprite2d* radar = new CSprite2d();
-        radar->m_pTexture = (RwTexture*)CUtil::LoadTextureFromTxd("txd", "map");
+        radar->m_pTexture = (RwTexture*)CUtil::LoadTextureFromDB("txd", "map");
         //radar->m_pRwTexture = CHUD::hud_radar;
 
         CRGBA color;
