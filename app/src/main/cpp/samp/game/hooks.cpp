@@ -65,7 +65,7 @@ void CSprite2d__Draw_hook(CSprite2d* a1, CRect* a2, CRGBA* a3)
         radar->m_pTexture = (RwTexture*)CUtil::LoadTextureFromDB("txd", "map");
         //radar->m_pRwTexture = CHUD::hud_radar;
 
-        /,/*CRGBA color;
+        /*CRGBA color;
         color.a = 255;
         color.r = 255;
         color.g = 255;
