@@ -29,7 +29,7 @@
 #include "CrossHair.h"
 #include "World.h"
 
-//mapa
+/*//mapa
 //#include "game_sa/CHUD.h"
 
 bool edgarmap = false;
@@ -69,7 +69,7 @@ void CSprite2d__Draw_hook(CSprite2d* a1, CRect* a2, CRGBA* a3)
         color.a = 255;
         color.r = 255;
         color.g = 255;
-        color.b = 255;*/
+        color.b = 255;
 
       //  if(CHUD::IsEnabled()) radar->Draw(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1, &color);
 // Defina uma cor sólida (ex: Vermelho) para enxergar bem
@@ -102,7 +102,7 @@ CSprite2d::Draw(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1,
             */
 /*
             CRect* rect = (CRect*)&radarr[3];
-            CHUD::EditRadar(rect);*/
+            CHUD::EditRadar(rect);
 
             // CHUD::Render();
             // ((void(*)())(g_libGTASA + 0x003D4ED8 + 1))(); // CHud::DrawRadar(void)
@@ -111,7 +111,7 @@ CSprite2d::Draw(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1,
 
     return CSprite2d__Draw(a1, a2, a3);
 }
-/* ====================================================== */
+/* ====================================================== 
 //Radar
 // Num espaço vazio, talvez bem no fim.
 #include "sprite2d.h"
@@ -133,9 +133,9 @@ void DrawRadarTexture(float x, float y, float size1, float size2)
 void(*CHud__Draw)();
 void CHud__Draw_hook()
 {
-    /*if(CHUD::IsEnabled())*/ //DrawRadarTexture(35.0f, 35.0f, 356.0f, 356.0f);
+    if(CHUD::IsEnabled())/ //DrawRadarTexture(35.0f, 35.0f, 356.0f, 356.0f);
 
-    //float* thiz = (float*) * (uintptr_t*)(g_libGTASA + 0x6580C8);
+    //float* thiz = (floa(uintptr_t*)(g_libGTASA + 0x6580C8);
     //if (thiz)
     //{
     //	thiz[5] = 45.0f;
@@ -144,6 +144,82 @@ void CHud__Draw_hook()
     if(CHUD::IsEnabled()) DrawRadarTexture(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1);
 
     CHud__Draw();
+}*/
+
+#include "..//util.h"
+#include "game_sa/CHUD.h"
+#include "game/Widgets/WidgetGta.h"
+#include "sprite2d.h"
+
+extern UI* pUI;
+
+// Objeto global para não vazar memória
+CSprite2d* g_pRadarSprite = nullptr;
+
+void (*CSprite2d__Draw)(CSprite2d* a1, CRect* a2, CRGBA* a3);
+void CSprite2d__Draw_hook(CSprite2d* a1, CRect* a2, CRGBA* a3)
+{
+    // Se a UI não estiver pronta, segue o jogo original
+    if (!pUI)
+    {
+        return CSprite2d__Draw(a1, a2, a3);
+    }
+
+    // Carrega a textura apenas UMA VEZ
+    if (g_pRadarSprite == nullptr) {
+        g_pRadarSprite = new CSprite2d();
+        g_pRadarSprite->m_pTexture = (RwTexture*)CUtil::LoadTextureFromDB("txd", "map");
+    }
+
+    // Lógica para desenhar o quadrado de teste ou o mapa
+   // if(CHUD::IsEnabled()) 
+    //{
+        CRGBA color(255, 255, 255, 255); // Branco para a textura aparecer real
+
+        // Pegando as coordenadas que vieram do seu Java
+        float x1 = CHUD::radarBgPos1.x1;
+        float y1 = CHUD::radarBgPos1.y1;
+        float x2 = CHUD::radarBgPos2.x1;
+        float y2 = CHUD::radarBgPos2.y1;
+
+        // USA O OBJETO GLOBAL para chamar o Draw
+        if(g_pRadarSprite) {
+            g_pRadarSprite->Draw(x1, y1, x2, y2, &color);
+        }
+   // }
+
+    return CSprite2d__Draw(a1, a2, a3);
+}
+
+/* ====================================================== */
+// Radar secundário
+void DrawRadarTexture(float x, float y, float size1, float size2)
+{
+    // Novamente: NÃO use 'new' aqui dentro. Use uma variável estática.
+    static CSprite2d* radarBackground = nullptr;
+    if(!radarBackground) {
+        radarBackground = new CSprite2d();
+        radarBackground->m_pTexture = (RwTexture*)CUtil::LoadTextureFromDB("radar", "bg_hud_map");
+    }
+
+    CRGBA color(255, 255, 255, 255);
+    if(radarBackground && radarBackground->m_pTexture) {
+        radarBackground->Draw(x, y, size1, size2, &color);
+    }
+}
+
+void(*CHud__Draw)();
+void CHud__Draw_hook()
+{
+    // Desenha sua HUD personalizada
+   // if(CHUD::IsEnabled()) {
+        DrawRadarTexture(CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1, 
+                         CHUD::radarBgPos2.x1, CHUD::radarBgPos2.y1);
+  //  }
+
+	FLog("Posicao Radar: %.2f, %.2f", CHUD::radarBgPos1.x1, CHUD::radarBgPos1.y1);
+
+    CHud__Draw(); // Chama o desenho original do HUD (ícones de arma, etc)
 }
 
 extern UI* pUI;
